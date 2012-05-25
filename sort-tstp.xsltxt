@@ -1,0 +1,66 @@
+stylesheet "1.0";
+include "utils/token-strings.xsl";
+output method="xml" indent="yes";
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// A comma-delimited string (that also starts and ends
+// with a comma) of the order of the nodes that we should print
+#ordering = { ""; }
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+// If we don't handle something explicitly, we don't handle it at all.
+tpl [*] {
+  $n = `name (.)`;
+  $message = `concat ("Error: we have arrived at an unhandled ", $n, " node.")`;
+  msg terminate="yes" $message;
+}
+
+tpl [/] {
+  if [tstp] {
+    if [$ordering = ""] {
+      <tstp {
+        for-each [@*] { copy-of `.`; }
+        apply [tstp] (#token-string = ",,");
+      }
+    } else {
+      $ordering-ok = is-valid-token-string (#string = $ordering);
+      if [$ordering-ok = "1"] {
+        <tstp {
+          for-each [@*] { copy-of `.`; }
+          apply [tstp] (#token-string = $ordering);
+        }
+      } else {
+        $message = `concat ("Error: the given ordering '", $ordering, "' is not a valid token string.")`;
+        msg terminate="yes" $message;
+      }
+    }
+  } else {
+    msg terminate="yes" "Error: the required tstp document element is missing.";
+  }
+}
+
+tpl [tstp] (#token-string) {
+  $num-formulas = `count (formula)`;
+  $num-commas-expected = `$num-formulas + 1`;
+  $empty = token-string-is-empty (#token-string = $token-string);
+  if [$empty = "1"] {
+    // we are done
+  } else {
+    $head = token-string-head (#token-string = $token-string);
+    $tail = token-string-tail (#token-string = $token-string);
+    for-each [formula[@name = $head]] {
+      apply [.];
+    }
+    apply [.] (#token-string = $tail);
+  }
+}
+
+tpl [formula] {
+  copy-of `.`;
+}
