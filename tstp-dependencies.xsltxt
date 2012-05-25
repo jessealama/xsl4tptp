@@ -1,0 +1,60 @@
+stylesheet "1.0";
+output method="text";
+
+//////////////////////////////////////////////////////////////////////
+// Keys
+//////////////////////////////////////////////////////////////////////
+
+key "formulas" [formula[@name]] `@name`;
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+// If we don't handle something explicitly, we don't handle it at all.
+tpl [*] {
+  $n = `name (.)`;
+  $message = `concat ("Error: we have arrived at an unhandled ", $n, " node.")`;
+  msg terminate="yes" $message;
+}
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp document element is missing.";
+  }
+}
+
+tpl [tstp] {
+  apply [formula];
+}
+
+tpl [formula[not(source)]] {
+ ""; // formulas without a source depend on nothing
+}
+
+tpl [formula[@name and @status = "axiom"]] {
+  $axiom-name = `@name`;
+  for-each [parent::*] {
+    for-each [formula[@name and not(@status = "axiom")]] {
+      $non-axiom-name = `@name`;
+      `$axiom-name`; " "; `$non-axiom-name`; "\n";
+    }
+  }
+}
+
+tpl [formula[@name and source and not(@status = "axiom")]] {
+  apply [source] (#formula = `@name`);
+}
+
+tpl [source] (#formula) {
+  for-each [descendant::*[@name]] {
+    $n = `@name`;
+    if [key ("formulas", $n)] {
+      for-each [key ("formulas", $n)] {
+        `@name`; " "; `$formula`; "\n";
+      }
+    }
+  }
+}
