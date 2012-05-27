@@ -1,0 +1,52 @@
+stylesheet "1.0";
+output method="xml" indent="yes";
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// If '1', the conjecture (if there is one) will be printed as an
+// axiom.  Otherwise, the conjecture formula (if there is one) will
+// simply be ignored.
+#axiomatize = { "0"; }
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+tpl [*] {
+  $n = `name (.)`;
+  <$n {
+    for-each [@*] { copy-of `.`; }
+    apply [*];
+  }
+}
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp root element is missing.";
+  }
+}
+
+tpl [tstp] {
+  <tstp {
+    if [$axiomatize = "1"] {
+      for-each [formula[@status = "conjecture"]] {
+        apply [.];
+      }
+    }
+    for-each [formula[not(@status = "conjecture")]] {
+      apply [.];
+    }
+  }
+}
+
+tpl [formula[@status = "conjecture"]] {
+  <formula {
+    for-each [@*] { copy-of `.`; }
+    @status = "axiom";
+    apply [*];
+  }
+}
