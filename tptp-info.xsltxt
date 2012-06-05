@@ -1,5 +1,5 @@
 stylesheet "1.0";
-include "render-tptp.xsl";
+import "render-tptp.xsl";
 output method="text";
 
 //////////////////////////////////////////////////////////////////////
@@ -41,7 +41,7 @@ tpl [formula] {
       `@syntax`;
     }
     when [$field = "formula"] {
-      apply [*[1]] mode="render";
+      apply [*[1]];
     }
     otherwise {
       msg terminate="yes" `concat ("Error: unknown target field '", $field, "'.")`;

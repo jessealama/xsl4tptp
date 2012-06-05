@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-  <xsl:include href="render-tptp.xsl"/>
+  <xsl:import href="render-tptp.xsl"/>
   <xsl:output method="text"/>
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Stylesheet parameters -->
@@ -49,10 +49,10 @@
         <xsl:value-of select="@status"/>
       </xsl:when>
       <xsl:when test="$field = &quot;syntax&quot;">
-        <xsl:value-of select="@syntax"/>
+        <xsl:text>fuck</xsl:text>
       </xsl:when>
       <xsl:when test="$field = &quot;formula&quot;">
-        <xsl:apply-templates select="*[1]" mode="render"/>
+        <xsl:apply-templates select="*[1]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
