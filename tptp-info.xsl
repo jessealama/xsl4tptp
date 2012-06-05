@@ -49,7 +49,7 @@
         <xsl:value-of select="@status"/>
       </xsl:when>
       <xsl:when test="$field = &quot;syntax&quot;">
-        <xsl:text>fuck</xsl:text>
+        <xsl:value-of select="@syntax"/>
       </xsl:when>
       <xsl:when test="$field = &quot;formula&quot;">
         <xsl:apply-templates select="*[1]"/>
