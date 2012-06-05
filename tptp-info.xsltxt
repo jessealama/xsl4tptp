@@ -1,0 +1,50 @@
+stylesheet "1.0";
+include "render-tptp.xsl";
+output method="text";
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// The field of the formula that we are after
+#field = { ""; }
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp root element is missing.";
+  }
+}
+
+tpl [tstp] {
+  if [count (formula) > 1] {
+    msg terminate="yes" "Error: this stylesheet should be applied only to TPTP problems/TSTP solutions containing a single formula.";
+  } else {
+    apply [formula];
+  }
+}
+
+tpl [formula] {
+  choose {
+    when [$field = "name"] {
+      `@name`;
+    }
+    when [$field = "status"] {
+      `@status`;
+    }
+    when [$field = "syntax"] {
+      `@syntax`;
+    }
+    when [$field = "formula"] {
+      apply [*[1]] mode="render";
+    }
+    otherwise {
+      msg terminate="yes" `concat ("Error: unknown target field '", $field, "'.")`;
+    }
+  }
+}
