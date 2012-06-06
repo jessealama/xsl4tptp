@@ -1,4 +1,5 @@
 stylesheet "1.0";
+import "render-tptp.xsl";
 output method="text";
 
 //////////////////////////////////////////////////////////////////////
@@ -97,25 +98,15 @@ tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {
 tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
   `@name`; "\n";
   for-each [*[1]] {
-    apply [.] mode="print";
+    apply [.];
   }
   "\n";
 }
 
 tpl [*] mode="emit-rhs" {
   if [count (*) = 2] {
-    apply [*[2]] mode="print";
+    apply [*[2]];
   } else {
     msg terminate="yes" "Error: we cannot print the right-hand side of an element that does not have exactly two children.";
   }
-}
-
-tpl [*] mode="print" {
-  $n = `name (.)`;
-  $message = `concat ("Error: we managed to land in the default print template for a(n) ", $n, " element; something has gone awry.")`;
-  msg terminate="yes" $message;
-}
-
-tpl [string[@name]] mode="print" {
-  `@name`;
 }

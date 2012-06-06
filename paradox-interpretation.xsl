@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:import href="render-tptp.xsl"/>
   <xsl:output method="text"/>
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Stylesheet parameters -->
@@ -113,7 +114,7 @@
     <xsl:text>
 </xsl:text>
     <xsl:for-each select="*[1]">
-      <xsl:apply-templates select="." mode="print"/>
+      <xsl:apply-templates select="."/>
     </xsl:for-each>
     <xsl:text>
 </xsl:text>
@@ -122,7 +123,7 @@
   <xsl:template match="*" mode="emit-rhs">
     <xsl:choose>
       <xsl:when test="count (*) = 2">
-        <xsl:apply-templates select="*[2]" mode="print"/>
+        <xsl:apply-templates select="*[2]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:message terminate="yes">
@@ -130,17 +131,5 @@
         </xsl:message>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:template>
-
-  <xsl:template match="*" mode="print">
-    <xsl:variable name="n" select="name (.)"/>
-    <xsl:variable name="message" select="concat (&quot;Error: we managed to land in the default print template for a(n) &quot;, $n, &quot; element; something has gone awry.&quot;)"/>
-    <xsl:message terminate="yes">
-      <xsl:value-of select="$message"/>
-    </xsl:message>
-  </xsl:template>
-
-  <xsl:template match="string[@name]" mode="print">
-    <xsl:value-of select="@name"/>
   </xsl:template>
 </xsl:stylesheet>
