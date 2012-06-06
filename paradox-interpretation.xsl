@@ -49,20 +49,20 @@
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]"/>
-    <xsl:if test="formula[@status = &quot;fi_functions&quot;]">
+    <xsl:if test="formula[@status = &quot;fi_functors&quot;]">
       <xsl:choose>
         <xsl:when test="$ignore-skolems = &quot;1&quot;">
-          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+          <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
                        and not(starts-with (@name, $skolem-prefix))]"/>
         </xsl:when>
         <xsl:when test="$skolems-last = &quot;1&quot;">
-          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+          <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
                        and not(starts-with (@name, $skolem-prefix))]"/>
-          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+          <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
                        and starts-with (@name, $skolem-prefix)]"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;]"/>
+          <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;]"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -108,7 +108,7 @@
     </xsl:message>
   </xsl:template>
 
-  <xsl:template match="formula[@status = &quot;fi_predicates&quot; or @status = &quot;fi_functions&quot;]">
+  <xsl:template match="formula[@status = &quot;fi_predicates&quot; or @status = &quot;fi_functors&quot;]">
     <xsl:value-of select="@name"/>
     <xsl:text>
 </xsl:text>

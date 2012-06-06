@@ -41,20 +41,20 @@ tpl [tstp[formula[@name = "domain"]]] {
   if [formula[@status = "fi_predicates"]] {
 
   }
-  if [formula[@status = "fi_functions"]] {
+  if [formula[@status = "fi_functors"]] {
     choose {
       when [$ignore-skolems = "1"] {
-        apply [formula[@status = "fi_functions"
+        apply [formula[@status = "fi_functors"
                        and not(starts-with (@name, $skolem-prefix))]];
       }
       when [$skolems-last = "1"] {
-        apply [formula[@status = "fi_functions"
+        apply [formula[@status = "fi_functors"
                        and not(starts-with (@name, $skolem-prefix))]];
-        apply [formula[@status = "fi_functions"
+        apply [formula[@status = "fi_functors"
                        and starts-with (@name, $skolem-prefix)]];
       }
       otherwise {
-        apply [formula[@status = "fi_functions"]];
+        apply [formula[@status = "fi_functors"]];
       }
     }
   }
@@ -94,7 +94,7 @@ tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {
   msg terminate="yes" "Error: the domain formula does not have the expected shape (universal quantification).";
 }
 
-tpl [formula[@status = "fi_predicates" or @status = "fi_functions"]] {
+tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
   `@name`; "\n";
   for-each [*[1]] {
     apply [.] mode="print";
