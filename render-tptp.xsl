@@ -307,4 +307,11 @@
   <xsl:template match="variable[@name]">
     <xsl:value-of select="@name"/>
   </xsl:template>
+
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Strings -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <xsl:template match="string[@name]">
+    <xsl:value-of select="@name"/>
+  </xsl:template>
 </xsl:stylesheet>
