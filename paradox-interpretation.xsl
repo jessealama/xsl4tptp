@@ -116,6 +116,8 @@
     <xsl:for-each select="*[1]">
       <xsl:apply-templates select="."/>
     </xsl:for-each>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="*" mode="emit-rhs">

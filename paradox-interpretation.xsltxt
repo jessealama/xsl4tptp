@@ -100,6 +100,7 @@ tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
   for-each [*[1]] {
     apply [.];
   }
+  "\n";
 }
 
 tpl [*] mode="emit-rhs" {
