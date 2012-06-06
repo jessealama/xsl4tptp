@@ -2,7 +2,31 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="text"/>
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Stylesheet parameters -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- If '1', any function symbol whose name starts with skolem-prefix -->
+  <!-- will be ignored.  (See the skolem-prefix stylesheet parameter.) -->
+  <xsl:param name="ignore-skolems">
+    <xsl:text>1</xsl:text>
+  </xsl:param>
+  <!-- Any function starting with this prefix will be considered a skolem -->
+  <!-- function. -->
+  <xsl:param name="skolem-prefix">
+    <xsl:text>sK</xsl:text>
+  </xsl:param>
+  <!-- If we are not ignoring skolems, and this is '1', we will print them -->
+  <!-- last.  If we are not ignoring skolems and this is not '1', then -->
+  <!-- skolems will be presented in whatever order they appear in in the -->
+  <!-- given interpretation.  (If we are ignoring skolems, the value of -->
+  <!-- this variable is immaterial.) -->
+  <xsl:param name="skolems-last">
+    <xsl:text>1</xsl:text>
+  </xsl:param>
 
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Templates -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:template match="/">
     <xsl:choose>
       <xsl:when test="tstp">
@@ -24,6 +48,24 @@
 
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
+    <xsl:if test="formula[@status = &quot;fi_predicates&quot;]"/>
+    <xsl:if test="formula[@status = &quot;fi_functions&quot;]">
+      <xsl:choose>
+        <xsl:when test="$ignore-skolems = &quot;1&quot;">
+          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+                       and not(starts-with (@name, $skolem-prefix))]"/>
+        </xsl:when>
+        <xsl:when test="$skolems-last = &quot;1&quot;">
+          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+                       and not(starts-with (@name, $skolem-prefix))]"/>
+          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;
+                       and starts-with (@name, $skolem-prefix)]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="formula[@status = &quot;fi_functions&quot;]"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="print-domain">
@@ -64,6 +106,17 @@
     <xsl:message terminate="yes">
       <xsl:text>Error: the domain formula does not have the expected shape (universal quantification).</xsl:text>
     </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="formula[@status = &quot;fi_predicates&quot; or @status = &quot;fi_functions&quot;]">
+    <xsl:value-of select="@name"/>
+    <xsl:text>
+</xsl:text>
+    <xsl:for-each select="*[1]">
+      <xsl:apply-templates select="." mode="print"/>
+    </xsl:for-each>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="*" mode="emit-rhs">

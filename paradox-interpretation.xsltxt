@@ -1,6 +1,28 @@
 stylesheet "1.0";
-
 output method="text";
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// If '1', any function symbol whose name starts with skolem-prefix
+// will be ignored.  (See the skolem-prefix stylesheet parameter.)
+#ignore-skolems = { "1"; }
+
+// Any function starting with this prefix will be considered a skolem
+// function.
+#skolem-prefix = { "sK"; }
+
+// If we are not ignoring skolems, and this is '1', we will print them
+// last.  If we are not ignoring skolems and this is not '1', then
+// skolems will be presented in whatever order they appear in in the
+// given interpretation.  (If we are ignoring skolems, the value of
+// this variable is immaterial.)
+#skolems-last = { "1"; }
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
 
 tpl [/] {
   if [tstp] {
@@ -16,6 +38,26 @@ tpl [tstp[not(formula[@name = "domain"])]] {
 
 tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]];
+  if [formula[@status = "fi_predicates"]] {
+
+  }
+  if [formula[@status = "fi_functions"]] {
+    choose {
+      when [$ignore-skolems = "1"] {
+        apply [formula[@status = "fi_functions"
+                       and not(starts-with (@name, $skolem-prefix))]];
+      }
+      when [$skolems-last = "1"] {
+        apply [formula[@status = "fi_functions"
+                       and not(starts-with (@name, $skolem-prefix))]];
+        apply [formula[@status = "fi_functions"
+                       and starts-with (@name, $skolem-prefix)]];
+      }
+      otherwise {
+        apply [formula[@status = "fi_functions"]];
+      }
+    }
+  }
 }
 
 tpl print-domain {
@@ -50,6 +92,14 @@ tpl [formula[@name = "domain" and quantifier[@type = "universal"]]] {
 
 tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {
   msg terminate="yes" "Error: the domain formula does not have the expected shape (universal quantification).";
+}
+
+tpl [formula[@status = "fi_predicates" or @status = "fi_functions"]] {
+  `@name`; "\n";
+  for-each [*[1]] {
+    apply [.] mode="print";
+  }
+  "\n";
 }
 
 tpl [*] mode="emit-rhs" {
