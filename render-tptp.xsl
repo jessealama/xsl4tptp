@@ -188,6 +188,14 @@
     <xsl:text>)</xsl:text>
   </xsl:template>
 
+  <xsl:template match="reverse-implication">
+    <xsl:text>(</xsl:text>
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> &lt;= </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
   <xsl:template match="equivalence">
     <xsl:text>(</xsl:text>
     <xsl:apply-templates select="*[1]"/>
