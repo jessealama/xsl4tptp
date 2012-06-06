@@ -50,7 +50,9 @@
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
-      <xsl:apply-templates select="formula[@status = &quot;fi_predicates&quot;]"/>
+      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;]">
+        <xsl:apply-templates select="."/>
+      </xsl:for-each>
     </xsl:if>
     <xsl:if test="formula[@status = &quot;fi_functors&quot;]">
       <xsl:choose>
