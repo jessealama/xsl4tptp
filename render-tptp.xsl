@@ -196,6 +196,14 @@
     <xsl:text>)</xsl:text>
   </xsl:template>
 
+  <xsl:template match="nonequivalence">
+    <xsl:text>(</xsl:text>
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> &lt;~&gt; </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
   <xsl:template match="predicate[@name = &quot;=&quot;]">
     <xsl:text>(</xsl:text>
     <xsl:apply-templates select="*[1]"/>
