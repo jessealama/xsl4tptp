@@ -199,5 +199,5 @@ tpl [variable[@name]] {
 
 tpl [string[@name]] {
   $n = `@name`;
-  `concat ("\"", $n, "\"")`;
+  `concat ("'", $n, "'")`;
 }

@@ -313,6 +313,6 @@
   <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:template match="string[@name]">
     <xsl:variable name="n" select="@name"/>
-    <xsl:value-of select="concat (&quot;&quot;&quot;, $n, &quot;&quot;&quot;)"/>
+    <xsl:value-of select="concat (&quot;&apos;&quot;, $n, &quot;&apos;&quot;)"/>
   </xsl:template>
 </xsl:stylesheet>
