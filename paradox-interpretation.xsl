@@ -49,7 +49,9 @@
 
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
-    <xsl:if test="formula[@status = &quot;fi_predicates&quot;]"/>
+    <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
+      <xsl:apply-templates select="formula[@status = &quot;fi_predicates&quot;]"/>
+    </xsl:if>
     <xsl:if test="formula[@status = &quot;fi_functors&quot;]">
       <xsl:choose>
         <xsl:when test="$ignore-skolems = &quot;1&quot;">

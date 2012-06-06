@@ -40,7 +40,7 @@ tpl [tstp[not(formula[@name = "domain"])]] {
 tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]];
   if [formula[@status = "fi_predicates"]] {
-
+    apply [formula[@status = "fi_predicates"]];
   }
   if [formula[@status = "fi_functors"]] {
     choose {
