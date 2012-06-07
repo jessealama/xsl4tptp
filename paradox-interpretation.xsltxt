@@ -63,7 +63,7 @@ tpl print-signature {
     "Predicates:"; "\n";
      for-each [formula[@status = "fi_predicates"
                        and not(starts-with (@name, $splitting-prefix))]] {
-       print-predicate-name-and-arity ();
+       print-predicate-name-and-arity (); "\n";
      }
   } else {
     "Predicates: (none, though equality may be implicitly present)";

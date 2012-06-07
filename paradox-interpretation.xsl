@@ -80,6 +80,8 @@
         <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
                        and not(starts-with (@name, $splitting-prefix))]">
           <xsl:call-template name="print-predicate-name-and-arity"/>
+          <xsl:text>
+</xsl:text>
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
