@@ -226,7 +226,7 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="formula[@status = &quot;fi_predicates&quot; or @status = &quot;fi_functors&quot;]">
+  <xsl:template match="formula[@status = &quot;fi_predicates&quot;]">
     <xsl:value-of select="@name"/>
     <xsl:text>
 </xsl:text>
@@ -255,6 +255,26 @@
               </xsl:for-each>
             </xsl:otherwise>
           </xsl:choose>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:call-template name="maybe-print-statement"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="formula[@status = &quot;fi_functors&quot;]">
+    <xsl:value-of select="@name"/>
+    <xsl:text>
+</xsl:text>
+    <xsl:for-each select="*[1]">
+      <xsl:choose>
+        <xsl:when test="self::conjunction">
+          <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
+            <xsl:call-template name="maybe-print-statement"/>
+          </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="maybe-print-statement"/>

@@ -174,7 +174,7 @@ tpl maybe-print-statement {
   }
 }
 
-tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
+tpl [formula[@status = "fi_predicates"]] {
   `@name`; "\n";
   for-each [*[1]] {
     if [self::conjunction] {
@@ -190,6 +190,20 @@ tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
         for-each [descendant::*[not(self::conjunction) and parent::conjunction]] {
           maybe-print-statement ();
         }
+      }
+    } else {
+      maybe-print-statement ();
+    }
+  }
+  "\n";
+}
+
+tpl [formula[@status = "fi_functors"]] {
+  `@name`; "\n";
+  for-each [*[1]] {
+    if [self::conjunction] {
+      for-each [descendant::*[not(self::conjunction) and parent::conjunction]] {
+        maybe-print-statement ();
       }
     } else {
       maybe-print-statement ();
