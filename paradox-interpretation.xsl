@@ -233,9 +233,28 @@
     <xsl:for-each select="*[1]">
       <xsl:choose>
         <xsl:when test="self::conjunction">
-          <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
-            <xsl:call-template name="maybe-print-statement"/>
-          </xsl:for-each>
+          <xsl:choose>
+            <xsl:when test="$no-false = &quot;1&quot;">
+              <xsl:choose>
+                <xsl:when test="descendant::equivalence[2][self::defined-predicate[@name = &quot;true&quot;]]">
+                  <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
+                    <xsl:call-template name="maybe-print-statement"/>
+                  </xsl:for-each>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>  </xsl:text>
+                  <xsl:text>(no true instances)</xsl:text>
+                  <xsl:text>
+</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
+                <xsl:call-template name="maybe-print-statement"/>
+              </xsl:for-each>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="maybe-print-statement"/>
