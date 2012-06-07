@@ -52,6 +52,8 @@
 
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
+    <xsl:text>
+</xsl:text>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
       <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
                       and not(starts-with(@name, $splitting-prefix))]">
@@ -137,8 +139,14 @@
   </xsl:template>
 
   <xsl:template match="equivalence[*[2][self::defined-predicate[@name = &quot;false&quot;]]]">
-    <xsl:text>~</xsl:text>
+    <xsl:text>~ </xsl:text>
     <xsl:apply-templates select="*[1]"/>
+  </xsl:template>
+
+  <xsl:template match="predicate[@name = &quot;=&quot;]">
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> = </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
   </xsl:template>
 
   <xsl:template match="*" mode="emit-rhs">

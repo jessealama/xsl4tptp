@@ -40,7 +40,8 @@ tpl [tstp[not(formula[@name = "domain"])]] {
 }
 
 tpl [tstp[formula[@name = "domain"]]] {
-  apply [formula[@name = "domain"]];
+  apply [formula[@name = "domain"]]; "\n";
+
   if [formula[@status = "fi_predicates"]] {
     for-each [formula[@status = "fi_predicates"
                       and not(starts-with(@name, $splitting-prefix))]] {
@@ -115,7 +116,11 @@ tpl [equivalence[*[2][self::defined-predicate[@name = "true"]]]] {
 }
 
 tpl [equivalence[*[2][self::defined-predicate[@name = "false"]]]] {
-  "~"; apply [*[1]];
+  "~ "; apply [*[1]];
+}
+
+tpl [predicate[@name = "="]] {
+  apply [*[1]]; " = "; apply [*[2]];
 }
 
 tpl [*] mode="emit-rhs" {
