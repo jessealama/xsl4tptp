@@ -27,6 +27,10 @@
   <xsl:param name="splitting-prefix">
     <xsl:text>sP</xsl:text>
   </xsl:param>
+  <!-- If '1', any false predicate will be ignored. -->
+  <xsl:param name="no-false">
+    <xsl:text>0</xsl:text>
+  </xsl:param>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Templates -->
@@ -230,8 +234,15 @@
   </xsl:template>
 
   <xsl:template match="equivalence[*[2][self::defined-predicate[@name = &quot;false&quot;]]]">
-    <xsl:text>~ </xsl:text>
-    <xsl:apply-templates select="*[1]"/>
+    <xsl:choose>
+      <xsl:when test="$no-false = &quot;1&quot;">
+        <xsl:text/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>~ </xsl:text>
+        <xsl:apply-templates select="*[1]"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="predicate[@name = &quot;=&quot;]">

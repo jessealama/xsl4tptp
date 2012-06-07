@@ -23,6 +23,9 @@ output method="text";
 
 #splitting-prefix = { "sP"; }
 
+// If '1', any false predicate will be ignored.
+#no-false = { "0"; }
+
 //////////////////////////////////////////////////////////////////////
 // Templates
 //////////////////////////////////////////////////////////////////////
@@ -178,7 +181,11 @@ tpl [equivalence[*[2][self::defined-predicate[@name = "true"]]]] {
 }
 
 tpl [equivalence[*[2][self::defined-predicate[@name = "false"]]]] {
-  "~ "; apply [*[1]];
+  if [$no-false = "1"] {
+    ""; // nothing
+  } else {
+    "~ "; apply [*[1]];
+  }
 }
 
 tpl [predicate[@name = "="]] {
