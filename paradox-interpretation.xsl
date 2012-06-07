@@ -126,11 +126,20 @@
     <xsl:text>
 </xsl:text>
     <xsl:for-each select="*[1]">
-      <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
-        <xsl:apply-templates select="."/>
-        <xsl:text>
+      <xsl:choose>
+        <xsl:when test="self::conjunction">
+          <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
+            <xsl:apply-templates select="."/>
+            <xsl:text>
 </xsl:text>
-      </xsl:for-each>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="."/>
+          <xsl:text>
+</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:for-each>
     <xsl:text>
 </xsl:text>
