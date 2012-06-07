@@ -50,23 +50,21 @@
     </xsl:message>
   </xsl:template>
 
+  <xsl:template name="print-name-and-arity">
+    <xsl:variable name="arity" select="count (*)"/>
+    <xsl:variable name="n" select="@name"/>
+    <xsl:value-of select="concat ($n, &quot; (arity &quot;, $arity, &quot;)&quot;)"/>
+  </xsl:template>
+
   <xsl:template name="print-function-name-and-arity">
     <xsl:for-each select="descendant::function[1]">
-      <xsl:variable name="arity" select="count (*)"/>
-      <xsl:variable name="n" select="@name"/>
-      <xsl:value-of select="concat ($n, &quot; (arity &quot;, $arity, &quot;)&quot;)"/>
-      <xsl:text>
-</xsl:text>
+      <xsl:call-template name="print-name-and-arity"/>
     </xsl:for-each>
   </xsl:template>
 
   <xsl:template name="print-predicate-name-and-arity">
     <xsl:for-each select="descendant::predicate[1]">
-      <xsl:variable name="arity" select="count (*)"/>
-      <xsl:variable name="n" select="@name"/>
-      <xsl:value-of select="concat ($n, &quot; (arity &quot;, $arity, &quot;)&quot;)"/>
-      <xsl:text>
-</xsl:text>
+      <xsl:call-template name="print-name-and-arity"/>
     </xsl:for-each>
   </xsl:template>
 
@@ -95,22 +93,28 @@
 </xsl:text>
         <xsl:choose>
           <xsl:when test="$ignore-skolems = &quot;1&quot;">
-            <xsl:for-each select="formula[@status = &quot;fi_functions&quot;
+            <xsl:for-each select="formula[@status = &quot;fi_functors&quot;
                         and not(starts-with (@name, $skolem-prefix))
                         and not(starts-with (@name, $splitting-prefix))]">
               <xsl:call-template name="print-function-name-and-arity"/>
+              <xsl:text>
+</xsl:text>
             </xsl:for-each>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:for-each select="formula[@status = &quot;fi_functions&quot;
+            <xsl:for-each select="formula[@status = &quot;fi_functors&quot;
                         and not(starts-with (@name, $splitting-prefix))]">
               <xsl:call-template name="print-function-name-and-arity"/>
+              <xsl:text>
+</xsl:text>
             </xsl:for-each>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>Functions/constants: (none)</xsl:text>
+        <xsl:text>
+</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
