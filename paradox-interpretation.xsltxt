@@ -21,6 +21,8 @@ output method="text";
 // this variable is immaterial.)
 #skolems-last = { "1"; }
 
+#splitting-prefix = { "sP"; }
+
 //////////////////////////////////////////////////////////////////////
 // Templates
 //////////////////////////////////////////////////////////////////////
@@ -40,7 +42,8 @@ tpl [tstp[not(formula[@name = "domain"])]] {
 tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]];
   if [formula[@status = "fi_predicates"]] {
-    for-each [formula[@status = "fi_predicates"]] {
+    for-each [formula[@status = "fi_predicates"
+                      and not(starts-with(@name, $splitting-prefix))]] {
       apply [.];
     }
   }

@@ -24,6 +24,9 @@
   <xsl:param name="skolems-last">
     <xsl:text>1</xsl:text>
   </xsl:param>
+  <xsl:param name="splitting-prefix">
+    <xsl:text>sP</xsl:text>
+  </xsl:param>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Templates -->
@@ -50,7 +53,8 @@
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
-      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;]">
+      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
+                      and not(starts-with(@name, $splitting-prefix))]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
     </xsl:if>
