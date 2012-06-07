@@ -71,7 +71,7 @@ tpl print-signature {
 
   "\n";
 
-  if [formula[@status = "fi_functions"]] {
+  if [formula[@status = "fi_functors"]] {
     "Functions:"; "\n";
     if [$ignore-skolems = "1"] {
       for-each [formula[@status = "fi_functors"

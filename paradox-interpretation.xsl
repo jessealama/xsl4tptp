@@ -93,7 +93,7 @@
     <xsl:text>
 </xsl:text>
     <xsl:choose>
-      <xsl:when test="formula[@status = &quot;fi_functions&quot;]">
+      <xsl:when test="formula[@status = &quot;fi_functors&quot;]">
         <xsl:text>Functions:</xsl:text>
         <xsl:text>
 </xsl:text>
