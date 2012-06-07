@@ -55,7 +55,8 @@
     <xsl:text>
 </xsl:text>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
-      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;]">
+      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
+                      and not(starts-with (@name, $splitting-prefix))]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
     </xsl:if>

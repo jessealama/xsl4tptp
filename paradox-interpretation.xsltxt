@@ -43,7 +43,8 @@ tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]]; "\n";
 
   if [formula[@status = "fi_predicates"]] {
-    for-each [formula[@status = "fi_predicates"]] {
+    for-each [formula[@status = "fi_predicates"
+                      and not(starts-with (@name, $splitting-prefix))]] {
       apply [.];
     }
   }
