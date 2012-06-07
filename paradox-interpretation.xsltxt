@@ -162,15 +162,27 @@ tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {
   msg terminate="yes" "Error: the domain formula does not have the expected shape (universal quantification).";
 }
 
+tpl maybe-print-statement {
+  if [$no-false = "1"] {
+    if [self::equivalence and *[2][defined-predicate[@name = "false"]]] {
+      ""; // nothing
+    } else {
+      apply [.]; "\n";
+    }
+  } else {
+    apply [.]; "\n";
+  }
+}
+
 tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
   `@name`; "\n";
   for-each [*[1]] {
     if [self::conjunction] {
       for-each [descendant::*[not(self::conjunction) and parent::conjunction]] {
-        apply [.]; "\n";
+        maybe-print-statement ();
       }
     } else {
-      apply [.]; "\n";
+      maybe-print-statement ();
     }
   }
   "\n";

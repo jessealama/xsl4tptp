@@ -204,6 +204,28 @@
     </xsl:message>
   </xsl:template>
 
+  <xsl:template name="maybe-print-statement">
+    <xsl:choose>
+      <xsl:when test="$no-false = &quot;1&quot;">
+        <xsl:choose>
+          <xsl:when test="self::equivalence and *[2][defined-predicate[@name = &quot;false&quot;]]">
+            <xsl:text/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="."/>
+            <xsl:text>
+</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="."/>
+        <xsl:text>
+</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="formula[@status = &quot;fi_predicates&quot; or @status = &quot;fi_functors&quot;]">
     <xsl:value-of select="@name"/>
     <xsl:text>
@@ -212,15 +234,11 @@
       <xsl:choose>
         <xsl:when test="self::conjunction">
           <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
-            <xsl:apply-templates select="."/>
-            <xsl:text>
-</xsl:text>
+            <xsl:call-template name="maybe-print-statement"/>
           </xsl:for-each>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="."/>
-          <xsl:text>
-</xsl:text>
+          <xsl:call-template name="maybe-print-statement"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>
