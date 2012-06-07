@@ -236,7 +236,7 @@
           <xsl:choose>
             <xsl:when test="$no-false = &quot;1&quot;">
               <xsl:choose>
-                <xsl:when test="descendant::equivalence[2][self::defined-predicate[@name = &quot;true&quot;]]">
+                <xsl:when test="descendant::equivalence[*[2][self::defined-predicate[@name = &quot;true&quot;]]]">
                   <xsl:for-each select="descendant::*[not(self::conjunction) and parent::conjunction]">
                     <xsl:call-template name="maybe-print-statement"/>
                   </xsl:for-each>
