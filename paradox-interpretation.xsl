@@ -257,7 +257,24 @@
           </xsl:choose>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="maybe-print-statement"/>
+          <xsl:choose>
+            <xsl:when test="$no-false = &quot;1&quot;">
+              <xsl:choose>
+                <xsl:when test="self::equivalence[*[2][self::defined-predicate[@name = &quot;true&quot;]]]">
+                  <xsl:call-template name="maybe-print-statement"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>  </xsl:text>
+                  <xsl:text>(no true instances)</xsl:text>
+                  <xsl:text>
+</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:call-template name="maybe-print-statement"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:for-each>

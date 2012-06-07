@@ -192,7 +192,15 @@ tpl [formula[@status = "fi_predicates"]] {
         }
       }
     } else {
-      maybe-print-statement ();
+      if [$no-false = "1"] {
+        if [self::equivalence[*[2][self::defined-predicate[@name = "true"]]]] {
+          maybe-print-statement ();
+        } else {
+          "  "; "(no true instances)"; "\n";
+        }
+      } else {
+        maybe-print-statement ();
+      }
     }
   }
   "\n";
