@@ -86,8 +86,12 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>Predicates: (none, though equality may be implicitly present)</xsl:text>
+        <xsl:text>
+</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:text>
+</xsl:text>
     <xsl:choose>
       <xsl:when test="formula[@status = &quot;fi_functions&quot;]">
         <xsl:text>Functions:</xsl:text>
@@ -119,6 +123,8 @@
 </xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">

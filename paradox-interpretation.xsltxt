@@ -66,8 +66,11 @@ tpl print-signature {
        print-predicate-name-and-arity (); "\n";
      }
   } else {
-    "Predicates: (none, though equality may be implicitly present)";
+    "Predicates: (none, though equality may be implicitly present)"; "\n";
   }
+
+  "\n";
+
   if [formula[@status = "fi_functions"]] {
     "Functions:"; "\n";
     if [$ignore-skolems = "1"] {
@@ -85,6 +88,8 @@ tpl print-signature {
   } else {
     "Functions/constants: (none)"; "\n";
   }
+
+  "\n";
 }
 
 tpl [tstp[formula[@name = "domain"]]] {
