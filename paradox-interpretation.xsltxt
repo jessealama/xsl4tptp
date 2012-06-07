@@ -110,6 +110,14 @@ tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
   "\n";
 }
 
+tpl [equivalence[*[2][self::defined-predicate[@name = "true"]]]] {
+  apply [*[1]];
+}
+
+tpl [equivalence[*[2][self::defined-predicate[@name = "false"]]]] {
+  "~"; apply [*[1]];
+}
+
 tpl [*] mode="emit-rhs" {
   if [count (*) = 2] {
     apply [*[2]];

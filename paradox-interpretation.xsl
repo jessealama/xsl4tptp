@@ -132,6 +132,15 @@
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="equivalence[*[2][self::defined-predicate[@name = &quot;true&quot;]]]">
+    <xsl:apply-templates select="*[1]"/>
+  </xsl:template>
+
+  <xsl:template match="equivalence[*[2][self::defined-predicate[@name = &quot;false&quot;]]]">
+    <xsl:text>~</xsl:text>
+    <xsl:apply-templates select="*[1]"/>
+  </xsl:template>
+
   <xsl:template match="*" mode="emit-rhs">
     <xsl:choose>
       <xsl:when test="count (*) = 2">
