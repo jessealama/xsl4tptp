@@ -164,7 +164,7 @@ tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {
 
 tpl maybe-print-statement {
   if [$no-false = "1"] {
-    if [self::equivalence and *[2][defined-predicate[@name = "false"]]] {
+    if [self::equivalence and *[2][self::defined-predicate[@name = "false"]]] {
       ""; // nothing
     } else {
       apply [.]; "\n";

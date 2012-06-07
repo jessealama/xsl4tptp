@@ -208,7 +208,7 @@
     <xsl:choose>
       <xsl:when test="$no-false = &quot;1&quot;">
         <xsl:choose>
-          <xsl:when test="self::equivalence and *[2][defined-predicate[@name = &quot;false&quot;]]">
+          <xsl:when test="self::equivalence and *[2][self::defined-predicate[@name = &quot;false&quot;]]">
             <xsl:text/>
           </xsl:when>
           <xsl:otherwise>
