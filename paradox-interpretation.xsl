@@ -135,6 +135,7 @@
   </xsl:template>
 
   <xsl:template match="equivalence[*[2][self::defined-predicate[@name = &quot;true&quot;]]]">
+    <xsl:text>  </xsl:text>
     <xsl:apply-templates select="*[1]"/>
   </xsl:template>
 

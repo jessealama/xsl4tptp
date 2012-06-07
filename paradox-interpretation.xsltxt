@@ -112,7 +112,7 @@ tpl [formula[@status = "fi_predicates" or @status = "fi_functors"]] {
 }
 
 tpl [equivalence[*[2][self::defined-predicate[@name = "true"]]]] {
-  apply [*[1]];
+  "  "; apply [*[1]];
 }
 
 tpl [equivalence[*[2][self::defined-predicate[@name = "false"]]]] {
