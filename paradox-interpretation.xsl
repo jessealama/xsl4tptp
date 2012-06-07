@@ -55,8 +55,7 @@
     <xsl:text>
 </xsl:text>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
-      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
-                      and not(starts-with(@name, $splitting-prefix))]">
+      <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;]">
         <xsl:apply-templates select="."/>
       </xsl:for-each>
     </xsl:if>
@@ -64,13 +63,16 @@
       <xsl:choose>
         <xsl:when test="$ignore-skolems = &quot;1&quot;">
           <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
-                       and not(starts-with (@name, $skolem-prefix))]"/>
+                       and not(starts-with (@name, $skolem-prefix))
+                       and not(starts-with (@name, $splitting-prefix))]"/>
         </xsl:when>
         <xsl:when test="$skolems-last = &quot;1&quot;">
           <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
-                       and not(starts-with (@name, $skolem-prefix))]"/>
+                       and not(starts-with (@name, $skolem-prefix))
+                       and not(starts-with (@name, $splitting-prefix))]"/>
           <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;
-                       and starts-with (@name, $skolem-prefix)]"/>
+                       and starts-with (@name, $skolem-prefix)
+                       and not(starts-with (@name, $splitting-prefix))]"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:apply-templates select="formula[@status = &quot;fi_functors&quot;]"/>

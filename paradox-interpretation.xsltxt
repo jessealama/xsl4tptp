@@ -43,8 +43,7 @@ tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]]; "\n";
 
   if [formula[@status = "fi_predicates"]] {
-    for-each [formula[@status = "fi_predicates"
-                      and not(starts-with(@name, $splitting-prefix))]] {
+    for-each [formula[@status = "fi_predicates"]] {
       apply [.];
     }
   }
@@ -52,13 +51,16 @@ tpl [tstp[formula[@name = "domain"]]] {
     choose {
       when [$ignore-skolems = "1"] {
         apply [formula[@status = "fi_functors"
-                       and not(starts-with (@name, $skolem-prefix))]];
+                       and not(starts-with (@name, $skolem-prefix))
+                       and not(starts-with (@name, $splitting-prefix))]];
       }
       when [$skolems-last = "1"] {
         apply [formula[@status = "fi_functors"
-                       and not(starts-with (@name, $skolem-prefix))]];
+                       and not(starts-with (@name, $skolem-prefix))
+                       and not(starts-with (@name, $splitting-prefix))]];
         apply [formula[@status = "fi_functors"
-                       and starts-with (@name, $skolem-prefix)]];
+                       and starts-with (@name, $skolem-prefix)
+                       and not(starts-with (@name, $splitting-prefix))]];
       }
       otherwise {
         apply [formula[@status = "fi_functors"]];
