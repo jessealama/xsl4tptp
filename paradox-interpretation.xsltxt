@@ -39,8 +39,56 @@ tpl [tstp[not(formula[@name = "domain"])]] {
   msg terminate="yes" "Error: the required domain formula is missing.";
 }
 
+tpl print-function-name-and-arity {
+  for-each [descendant::function[1]] {
+    $arity = `count (*)`;
+    $n = `@name`;
+    `concat ($n, " (arity ", $arity, ")")`; "\n";
+  }
+}
+
+tpl print-predicate-name-and-arity {
+  for-each [descendant::predicate[1]] {
+    $arity = `count (*)`;
+    $n = `@name`;
+    `concat ($n, " (arity ", $arity, ")")`; "\n";
+  }
+}
+
+tpl print-signature {
+  "Signature:"; "\n";
+  if [formula[@status = "fi_predicates"]] {
+    "Predicates:"; "\n";
+     for-each [formula[@status = "fi_predicates"
+                       and not(starts-with (@name, $splitting-prefix))]] {
+       print-predicate-name-and-arity ();
+     }
+  } else {
+    "Predicates: (none, though equality may be implicitly present)";
+  }
+  if [formula[@status = "fi_functions"]] {
+    "Functions:"; "\n";
+    if [$ignore-skolems = "1"] {
+      for-each [formula[@status = "fi_functions"
+                        and not(starts-with (@name, $skolem-prefix))
+                        and not(starts-with (@name, $splitting-prefix))]] {
+        print-function-name-and-arity ();
+      }
+    } else {
+      for-each [formula[@status = "fi_functions"
+                        and not(starts-with (@name, $splitting-prefix))]] {
+        print-function-name-and-arity ();
+      }
+    }
+  } else {
+    "Functions/constants: (none)";
+  }
+}
+
 tpl [tstp[formula[@name = "domain"]]] {
   apply [formula[@name = "domain"]]; "\n";
+
+  print-signature ();
 
   if [formula[@status = "fi_predicates"]] {
     for-each [formula[@status = "fi_predicates"

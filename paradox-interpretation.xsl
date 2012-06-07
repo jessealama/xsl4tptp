@@ -50,10 +50,76 @@
     </xsl:message>
   </xsl:template>
 
+  <xsl:template name="print-function-name-and-arity">
+    <xsl:for-each select="descendant::function[1]">
+      <xsl:variable name="arity" select="count (*)"/>
+      <xsl:variable name="n" select="@name"/>
+      <xsl:value-of select="concat ($n, &quot; (arity &quot;, $arity, &quot;)&quot;)"/>
+      <xsl:text>
+</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="print-predicate-name-and-arity">
+    <xsl:for-each select="descendant::predicate[1]">
+      <xsl:variable name="arity" select="count (*)"/>
+      <xsl:variable name="n" select="@name"/>
+      <xsl:value-of select="concat ($n, &quot; (arity &quot;, $arity, &quot;)&quot;)"/>
+      <xsl:text>
+</xsl:text>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="print-signature">
+    <xsl:text>Signature:</xsl:text>
+    <xsl:text>
+</xsl:text>
+    <xsl:choose>
+      <xsl:when test="formula[@status = &quot;fi_predicates&quot;]">
+        <xsl:text>Predicates:</xsl:text>
+        <xsl:text>
+</xsl:text>
+        <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
+                       and not(starts-with (@name, $splitting-prefix))]">
+          <xsl:call-template name="print-predicate-name-and-arity"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Predicates: (none, though equality may be implicitly present)</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:choose>
+      <xsl:when test="formula[@status = &quot;fi_functions&quot;]">
+        <xsl:text>Functions:</xsl:text>
+        <xsl:text>
+</xsl:text>
+        <xsl:choose>
+          <xsl:when test="$ignore-skolems = &quot;1&quot;">
+            <xsl:for-each select="formula[@status = &quot;fi_functions&quot;
+                        and not(starts-with (@name, $skolem-prefix))
+                        and not(starts-with (@name, $splitting-prefix))]">
+              <xsl:call-template name="print-function-name-and-arity"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:for-each select="formula[@status = &quot;fi_functions&quot;
+                        and not(starts-with (@name, $splitting-prefix))]">
+              <xsl:call-template name="print-function-name-and-arity"/>
+            </xsl:for-each>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:text>Functions/constants: (none)</xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="tstp[formula[@name = &quot;domain&quot;]]">
     <xsl:apply-templates select="formula[@name = &quot;domain&quot;]"/>
     <xsl:text>
 </xsl:text>
+    <xsl:call-template name="print-signature"/>
     <xsl:if test="formula[@status = &quot;fi_predicates&quot;]">
       <xsl:for-each select="formula[@status = &quot;fi_predicates&quot;
                       and not(starts-with (@name, $splitting-prefix))]">
