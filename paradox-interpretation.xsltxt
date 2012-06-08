@@ -131,8 +131,9 @@ tpl [tstp[formula[@name = "domain"]]] {
 tpl [formula[@name = "domain" and quantifier[@type = "universal"]]] {
   "Domain: ";
   for-each [*[1]] {
-    list (#separ = ",", #elems = `descendant::string`);
+    list (#separ = ", ", #elems = `descendant::string`);
   }
+  "\n";
 }
 
 tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {

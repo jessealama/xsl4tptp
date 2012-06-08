@@ -169,11 +169,13 @@
     <xsl:for-each select="*[1]">
       <xsl:call-template name="list">
         <xsl:with-param name="separ">
-          <xsl:text>,</xsl:text>
+          <xsl:text>, </xsl:text>
         </xsl:with-param>
         <xsl:with-param name="elems" select="descendant::string"/>
       </xsl:call-template>
     </xsl:for-each>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="formula[@name = &quot;domain&quot; and not(quantifier[@type = &quot;universal&quot;])]">
