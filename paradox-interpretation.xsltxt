@@ -128,34 +128,11 @@ tpl [tstp[formula[@name = "domain"]]] {
   }
 }
 
-tpl print-domain {
-  for-each [quantifier[@type = "universal"]] {
-    for-each [*[position() = last()]] {
-      choose {
-        when [self::disjunction] {
-          for-each [predicate[@name = "="]] {
-            apply [.] mode="emit-rhs";
-            if [position() < last()] {
-              ", ";
-            }
-          }
-          "\n";
-        }
-        when [self::predicate] {
-          apply [.] mode="emit-rhs";
-          "\n";
-        }
-        otherwise {
-          msg terminate="yes" "Error: unable to handle a domain formula whose matrix is neither an atom nor a disjunction.";
-        }
-      }
-    }
-  }
-}
-
 tpl [formula[@name = "domain" and quantifier[@type = "universal"]]] {
   "Domain: ";
-  print-domain ();
+  for-each [*[1]] {
+    list (#separ = ",", #elems = `descendant::string`);
+  }
 }
 
 tpl [formula[@name = "domain" and not(quantifier[@type = "universal"])]] {

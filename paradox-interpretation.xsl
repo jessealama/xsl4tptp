@@ -164,38 +164,16 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template name="print-domain">
-    <xsl:for-each select="quantifier[@type = &quot;universal&quot;]">
-      <xsl:for-each select="*[position() = last()]">
-        <xsl:choose>
-          <xsl:when test="self::disjunction">
-            <xsl:for-each select="predicate[@name = &quot;=&quot;]">
-              <xsl:apply-templates select="." mode="emit-rhs"/>
-              <xsl:if test="position() &lt; last()">
-                <xsl:text>, </xsl:text>
-              </xsl:if>
-            </xsl:for-each>
-            <xsl:text>
-</xsl:text>
-          </xsl:when>
-          <xsl:when test="self::predicate">
-            <xsl:apply-templates select="." mode="emit-rhs"/>
-            <xsl:text>
-</xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:message terminate="yes">
-              <xsl:text>Error: unable to handle a domain formula whose matrix is neither an atom nor a disjunction.</xsl:text>
-            </xsl:message>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:for-each>
-    </xsl:for-each>
-  </xsl:template>
-
   <xsl:template match="formula[@name = &quot;domain&quot; and quantifier[@type = &quot;universal&quot;]]">
     <xsl:text>Domain: </xsl:text>
-    <xsl:call-template name="print-domain"/>
+    <xsl:for-each select="*[1]">
+      <xsl:call-template name="list">
+        <xsl:with-param name="separ">
+          <xsl:text>,</xsl:text>
+        </xsl:with-param>
+        <xsl:with-param name="elems" select="descendant::string"/>
+      </xsl:call-template>
+    </xsl:for-each>
   </xsl:template>
 
   <xsl:template match="formula[@name = &quot;domain&quot; and not(quantifier[@type = &quot;universal&quot;])]">
