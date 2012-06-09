@@ -1,0 +1,142 @@
+stylesheet "1.0";
+import "utils/die.xsl";
+import "utils/list.xsl";
+output method="text";
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp root element is missing.";
+  }
+}
+
+tpl [tstp] {
+  apply [formula];
+}
+
+tpl [formula[not(@name)]] {
+  apply [.] (#message = "Error: formulas must have names.") mode="die";
+}
+
+tpl [formula[not(@syntax)]] {
+  apply [.] (#message = "Error: formulas must have a syntax.") mode="die";
+}
+
+tpl [formula[not(@status)]] {
+  apply [.] (#message = "Error: formulas must have a status.") mode="die";
+}
+
+tpl [formula[@name and @syntax and @status]] {
+  $n = `@name`;
+  $status = `@status`;
+  $syntax = `@syntax`;
+  "("; $syntax; " "; $n; " "; $status; " "; apply [*[1]];
+  if [source] {
+    apply [source];
+  }
+  if [useful-info] {
+    apply [useful-info];
+  }
+  ")"; "\n";
+}
+
+tpl [source] {
+  "source";
+}
+
+tpl [useful-info] {
+  "useful-info";
+}
+
+//////////////////////////////////////////////////////////////////////
+// Rendering TPTP formulas
+//////////////////////////////////////////////////////////////////////
+
+tpl [disjunction] {
+ "(or "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [conjunction] {
+ "(and "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [implication] {
+ "(implies "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [reverse-implication] {
+ "(implies "; apply [*[2]]; " "; apply [*[1]]; ")";
+}
+
+tpl [equivalence] {
+ "(iff "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [nonequivalence] {
+ "(xor "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [predicate[@name = "="]] {
+  "(= "; apply [*[1]]; " "; apply [*[2]]; ")";
+}
+
+tpl [predicate[@name and not(@name = "=")]] {
+  if [*] {
+    "("; `@name`; " "; list (#separ = " ", #elems = `*`); ")";
+  } else {
+    "("; `@name`; ")";
+  }
+}
+
+tpl [negation] {
+  "(not "; apply [*[1]]; ")";
+}
+
+tpl [quantifier[@type = "universal"]] {
+  "(all ";
+    "(";list (#separ = " ", #elems = `variable`); ")";
+    " ";
+    apply [*[position() = last()]];
+  ")";
+}
+
+tpl [quantifier[@type = "existential"]] {
+  "(exists ";
+    "(";list (#separ = " ", #elems = `variable`); ")";
+    " "; apply [*[position() = last()]];
+  ")";
+}
+
+tpl [defined-predicate[@name = "false"]] {
+  "(false)";
+}
+
+tpl [defined-predicate[@name = "true"]] {
+  "(true)";
+}
+
+//////////////////////////////////////////////////////////////////////
+// Terms
+//////////////////////////////////////////////////////////////////////
+
+tpl [function[@name]] {
+  if [*] {
+    "("; `@name`; " "; list (#separ = " ", #elems = `*`); ")";
+  } else {
+    "("; `@name`; ")";
+  }
+}
+
+tpl [variable[@name]] {
+  "?"; `@name`;
+}
+
+//////////////////////////////////////////////////////////////////////
+// Strings
+//////////////////////////////////////////////////////////////////////
+
+tpl [string[@name]] {
+  $n = `@name`;
+  `concat ("'", $n, "'")`;
+}
