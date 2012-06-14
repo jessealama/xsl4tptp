@@ -12,7 +12,7 @@ tpl [/] {
 }
 
 tpl [tstp] {
-  apply [formula];
+  "("; "\n"; apply [formula]; "\n"; ")"; "\n";
 }
 
 tpl [formula[not(@name)]] {
@@ -33,20 +33,64 @@ tpl [formula[@name and @syntax and @status]] {
   $syntax = `@syntax`;
   "("; $syntax; " "; $n; " "; $status; " "; apply [*[1]];
   if [source] {
-    apply [source];
+    " "; apply [source];
   }
   if [useful-info] {
-    apply [useful-info];
+    " "; apply [useful-info];
   }
   ")"; "\n";
 }
 
-tpl [source] {
-  "source";
+tpl [source[not(non-logical-data) and not(number) and not(string)]] {
+  msg terminate="yes" "Error: don't know how to handle a source node that lacks a non-logical-data child, a number child, and a string child.";
 }
 
-tpl [useful-info] {
-  "useful-info";
+tpl [source[non-logical-data]] {
+  apply [non-logical-data];
+}
+
+tpl [source[number]] {
+  apply [number];
+}
+
+tpl [source[string]] {
+  apply [string];
+}
+
+tpl [useful-info[not(non-logical-data) and not(number) and not(string)]] {
+  msg terminate="yes" "Error: don't know how to handle a useful-info node that lacks a non-logical-data child, a number child, and a string child.";
+}
+
+tpl [useful-info[non-logical-data]] {
+  apply [non-logical-data];
+}
+
+tpl [useful-info[string]] {
+  apply [string];
+}
+
+tpl [non-logical-data[number]] {
+  apply [number];
+}
+
+tpl [non-logical-data[@name and *]] {
+  "("; `@name`; list (#elems = `*`, #separ = " "); ")";
+}
+
+tpl [non-logical-data[@name and not(*)]] {
+  `@name`;
+}
+
+tpl [non-logical-data[not(@name)]] {
+
+}
+
+tpl [number] {
+  `@name`;
+}
+
+tpl [string] {
+  `@name`;
 }
 
 //////////////////////////////////////////////////////////////////////

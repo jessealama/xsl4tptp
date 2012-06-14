@@ -19,7 +19,15 @@
   </xsl:template>
 
   <xsl:template match="tstp">
+    <xsl:text>(</xsl:text>
+    <xsl:text>
+</xsl:text>
     <xsl:apply-templates select="formula"/>
+    <xsl:text>
+</xsl:text>
+    <xsl:text>)</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="formula[not(@name)]">
@@ -59,9 +67,11 @@
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="*[1]"/>
     <xsl:if test="source">
+      <xsl:text> </xsl:text>
       <xsl:apply-templates select="source"/>
     </xsl:if>
     <xsl:if test="useful-info">
+      <xsl:text> </xsl:text>
       <xsl:apply-templates select="useful-info"/>
     </xsl:if>
     <xsl:text>)</xsl:text>
@@ -69,12 +79,66 @@
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="source">
-    <xsl:text>source</xsl:text>
+  <xsl:template match="source[not(non-logical-data) and not(number) and not(string)]">
+    <xsl:message terminate="yes">
+      <xsl:text>Error: don&apos;t know how to handle a source node that lacks a non-logical-data child, a number child, and a string child.</xsl:text>
+    </xsl:message>
   </xsl:template>
 
-  <xsl:template match="useful-info">
-    <xsl:text>useful-info</xsl:text>
+  <xsl:template match="source[non-logical-data]">
+    <xsl:apply-templates select="non-logical-data"/>
+  </xsl:template>
+
+  <xsl:template match="source[number]">
+    <xsl:apply-templates select="number"/>
+  </xsl:template>
+
+  <xsl:template match="source[string]">
+    <xsl:apply-templates select="string"/>
+  </xsl:template>
+
+  <xsl:template match="useful-info[not(non-logical-data) and not(number) and not(string)]">
+    <xsl:message terminate="yes">
+      <xsl:text>Error: don&apos;t know how to handle a useful-info node that lacks a non-logical-data child, a number child, and a string child.</xsl:text>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="useful-info[non-logical-data]">
+    <xsl:apply-templates select="non-logical-data"/>
+  </xsl:template>
+
+  <xsl:template match="useful-info[string]">
+    <xsl:apply-templates select="string"/>
+  </xsl:template>
+
+  <xsl:template match="non-logical-data[number]">
+    <xsl:apply-templates select="number"/>
+  </xsl:template>
+
+  <xsl:template match="non-logical-data[@name and *]">
+    <xsl:text>(</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:call-template name="list">
+      <xsl:with-param name="elems" select="*"/>
+      <xsl:with-param name="separ">
+        <xsl:text> </xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="non-logical-data[@name and not(*)]">
+    <xsl:value-of select="@name"/>
+  </xsl:template>
+
+  <xsl:template match="non-logical-data[not(@name)]"/>
+
+  <xsl:template match="number">
+    <xsl:value-of select="@name"/>
+  </xsl:template>
+
+  <xsl:template match="string">
+    <xsl:value-of select="@name"/>
   </xsl:template>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
