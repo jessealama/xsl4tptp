@@ -131,7 +131,17 @@
     <xsl:value-of select="@name"/>
   </xsl:template>
 
-  <xsl:template match="non-logical-data[not(@name)]"/>
+  <xsl:template match="non-logical-data[not(@name)]">
+    <xsl:text>(</xsl:text>
+    <xsl:value-of select="@name"/>
+    <xsl:call-template name="list">
+      <xsl:with-param name="elems" select="*"/>
+      <xsl:with-param name="separ">
+        <xsl:text> </xsl:text>
+      </xsl:with-param>
+    </xsl:call-template>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
 
   <xsl:template match="number">
     <xsl:value-of select="@name"/>

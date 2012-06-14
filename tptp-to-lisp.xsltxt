@@ -82,7 +82,7 @@ tpl [non-logical-data[@name and not(*)]] {
 }
 
 tpl [non-logical-data[not(@name)]] {
-
+  "("; `@name`; list (#elems = `*`, #separ = " "); ")";
 }
 
 tpl [number] {
