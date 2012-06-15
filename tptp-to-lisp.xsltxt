@@ -121,10 +121,6 @@ tpl [nonequivalence] {
  "(xor "; apply [*[1]]; " "; apply [*[2]]; ")";
 }
 
-tpl [predicate[@name = "="]] {
-  "(= "; apply [*[1]]; " "; apply [*[2]]; ")";
-}
-
 tpl [predicate[@name and not(@name = "=")]] {
   if [*] {
     "("; `@name`; " "; list (#separ = " ", #elems = `*`); ")";
@@ -139,7 +135,7 @@ tpl [negation] {
 
 tpl [quantifier[@type = "universal"]] {
   "(all ";
-    "(";list (#separ = " ", #elems = `variable`); ")";
+    "("; list (#separ = " ", #elems = `variable`); ")";
     " ";
     apply [*[position() = last()]];
   ")";
