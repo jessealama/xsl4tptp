@@ -202,15 +202,7 @@
     <xsl:text>)</xsl:text>
   </xsl:template>
 
-  <xsl:template match="predicate[@name = &quot;=&quot;]">
-    <xsl:text>(= </xsl:text>
-    <xsl:apply-templates select="*[1]"/>
-    <xsl:text> </xsl:text>
-    <xsl:apply-templates select="*[2]"/>
-    <xsl:text>)</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="predicate[@name and not(@name = &quot;=&quot;)]">
+  <xsl:template match="predicate[@name]">
     <xsl:choose>
       <xsl:when test="*">
         <xsl:text>(</xsl:text>

@@ -121,7 +121,7 @@ tpl [nonequivalence] {
  "(xor "; apply [*[1]]; " "; apply [*[2]]; ")";
 }
 
-tpl [predicate[@name and not(@name = "=")]] {
+tpl [predicate[@name]] {
   if [*] {
     "("; `@name`; " "; list (#separ = " ", #elems = `*`); ")";
   } else {
