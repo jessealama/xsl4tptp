@@ -1,0 +1,33 @@
+stylesheet "1.0";
+output method="text";
+
+key "formulas" [formula] `@name`;
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp document element is missing.";
+  }
+}
+
+tpl [tstp] {
+  apply [formula];
+}
+
+tpl [formula[not(source)]] {
+  "";
+}
+
+tpl [formula[source]] {
+  apply [source];
+}
+
+tpl [source] {
+  for-each [descendant::*[@name]] {
+    $n = `@name`;
+    if [key ("formulas", $n)] {
+      $n; "\n";
+    }
+  }
+}
