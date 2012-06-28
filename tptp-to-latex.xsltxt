@@ -1,0 +1,112 @@
+stylesheet "1.0";
+import "utils/list.xsl";
+output method="text";
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+#implication-sign = { "rightarrow"; }
+#biimplication-sign = { "leftrightarrow"; }
+#negation-sign = { "neg"; }
+#conjunction-sign = { "wedge"; }
+#disjunction-sign = { "vee"; }
+
+//////////////////////////////////////////////////////////////////////
+// Utilities
+//////////////////////////////////////////////////////////////////////
+
+tpl command-sequence (#command) {
+  `concat ("&#92;", $command)`;
+}
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+tpl [/] {
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the required tstp root element is missing.";
+  }
+}
+
+tpl [tstp] {
+  command-sequence (#command = "begin"); "{description}"; "\n";
+  apply [formula];
+  command-sequence (#command = "end"); "{description}"; "\n";
+}
+
+tpl [formula] {
+  "\item["; `@name`; "]"; "$"; apply [*[1]]; "$"; "\n";
+}
+
+//////////////////////////////////////////////////////////////////////
+// Formulas proper
+//////////////////////////////////////////////////////////////////////
+
+tpl [*] {
+  $n = `name (.)`;
+  msg terminate="yes" `concat ("Error: we have arrived at an unhandled ", $n, " node in render-latex mode.")`;
+}
+
+tpl [quantifier[@type = "universal"]] {
+  "&#92;"; "forall "; list (#separ = ",", #elems = `variable`); " "; command-sequence (#command = "left"); "[ "; apply [*[position() = last()]]; " "; command-sequence (#command = "right"); "]";
+}
+
+tpl [quantifier[@type = "existential"]] {
+  "&#92;"; "exists "; list (#separ = ",", #elems = `variable`); " "; command-sequence (#command = "left"); "[ "; apply [*[position() = last()]]; " "; command-sequence (#command = "right"); "]";
+}
+
+tpl [implication] {
+  "("; apply [*[1]]; " {"; command-sequence (#command = $implication-sign); "} "; apply [*[2]];
+}
+
+tpl [reverse-implication] {
+  "("; apply [*[2]]; " {"; command-sequence (#command = $implication-sign); "} "; apply [*[1]];
+}
+
+tpl [equivalence] {
+  "("; apply [*[1]]; " {"; command-sequence (#command = $biimplication-sign); "} "; apply [*[2]]; ")";
+}
+
+tpl [nonequivalence] {
+  command-sequence (#command = $negation-sign); "("; apply [*[1]]; " {"; command-sequence (#command = $biimplication-sign); "} "; apply [*[2]]; ")";
+}
+
+tpl [predicate[* and @name = "="]] {
+  apply [*[1]]; " = "; apply [*[2]];
+}
+
+tpl [predicate[* and not(@name = "=")]] {
+  `@name`; "("; list (#separ = ",", #elems = `*`); ")";
+}
+
+tpl [predicate[not(*)]] {
+  `@name`;
+}
+
+tpl [negation] {
+  "("; command-sequence (#command = $negation-sign); apply [*[1]]; ")";
+}
+
+tpl [conjunction] {
+  "("; apply [*[1]]; " "; command-sequence (#command = $conjunction-sign); " "; apply [*[2]]; ")";
+}
+
+tpl [disjunction] {
+  "("; apply [*[1]]; " "; command-sequence (#command = $disjunction-sign); " "; apply [*[2]]; ")";
+}
+
+tpl [variable] {
+  `@name`;
+}
+
+tpl [function[*]] {
+  `@name`; "("; list (#separ = ",", #elems = `*`); ")";
+}
+
+tpl [function[not(*)]] {
+  `@name`;
+}
