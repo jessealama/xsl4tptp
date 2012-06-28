@@ -30,6 +30,28 @@
     <xsl:value-of select="concat (&quot;&#92;&quot;, $command)"/>
   </xsl:template>
 
+  <xsl:template name="escape-underscore">
+    <xsl:param name="s"/>
+    <xsl:choose>
+      <xsl:when test="$s = &quot;&quot;">
+        <xsl:text/>
+      </xsl:when>
+      <xsl:when test="contains ($s, &quot;_&quot;)">
+        <xsl:variable name="before" select="substring-before ($s, &quot;_&quot;)"/>
+        <xsl:variable name="after" select="substring-after ($s, &quot;_&quot;)"/>
+        <xsl:variable name="escaped">
+          <xsl:call-template name="escape-underscore">
+            <xsl:with-param name="s" select="$after"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="concat ($before, &quot;&#92;&quot;, &quot;_&quot;, $escaped)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Templates -->
   <!-- //////////////////////////////////////////////////////////////////// -->
@@ -195,7 +217,9 @@
   </xsl:template>
 
   <xsl:template match="predicate[* and not(@name = &quot;=&quot;)]">
-    <xsl:value-of select="@name"/>
+    <xsl:call-template name="escape-underscore">
+      <xsl:with-param name="s" select="@name"/>
+    </xsl:call-template>
     <xsl:text>(</xsl:text>
     <xsl:call-template name="list">
       <xsl:with-param name="separ">
@@ -207,7 +231,9 @@
   </xsl:template>
 
   <xsl:template match="predicate[not(*)]">
-    <xsl:value-of select="@name"/>
+    <xsl:call-template name="escape-underscore">
+      <xsl:with-param name="s" select="@name"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="negation">
@@ -248,7 +274,9 @@
   </xsl:template>
 
   <xsl:template match="function[*]">
-    <xsl:value-of select="@name"/>
+    <xsl:call-template name="escape-underscore">
+      <xsl:with-param name="s" select="@name"/>
+    </xsl:call-template>
     <xsl:text>(</xsl:text>
     <xsl:call-template name="list">
       <xsl:with-param name="separ">
@@ -260,6 +288,8 @@
   </xsl:template>
 
   <xsl:template match="function[not(*)]">
-    <xsl:value-of select="@name"/>
+    <xsl:call-template name="escape-underscore">
+      <xsl:with-param name="s" select="@name"/>
+    </xsl:call-template>
   </xsl:template>
 </xsl:stylesheet>

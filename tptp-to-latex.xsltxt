@@ -20,6 +20,23 @@ tpl command-sequence (#command) {
   `concat ("&#92;", $command)`;
 }
 
+tpl escape-underscore (#s) {
+  choose {
+    when [$s = ""] {
+      "";
+    }
+    when [contains ($s, "_")] {
+      $before = `substring-before ($s, "_")`;
+      $after = `substring-after ($s, "_")`;
+      $escaped = escape-underscore (#s = $after);
+      `concat ($before, "&#92;", "_", $escaped)`;
+    }
+    otherwise {
+      $s;
+    }
+  }
+}
+
 //////////////////////////////////////////////////////////////////////
 // Templates
 //////////////////////////////////////////////////////////////////////
@@ -80,11 +97,11 @@ tpl [predicate[* and @name = "="]] {
 }
 
 tpl [predicate[* and not(@name = "=")]] {
-  `@name`; "("; list (#separ = ",", #elems = `*`); ")";
+  escape-underscore (#s = `@name`); "("; list (#separ = ",", #elems = `*`); ")";
 }
 
 tpl [predicate[not(*)]] {
-  `@name`;
+  escape-underscore (#s = `@name`);
 }
 
 tpl [negation] {
@@ -104,9 +121,9 @@ tpl [variable] {
 }
 
 tpl [function[*]] {
-  `@name`; "("; list (#separ = ",", #elems = `*`); ")";
+  escape-underscore (#s = `@name`); "("; list (#separ = ",", #elems = `*`); ")";
 }
 
 tpl [function[not(*)]] {
-  `@name`;
+  escape-underscore (#s = `@name`);
 }
