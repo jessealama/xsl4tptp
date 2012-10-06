@@ -14,12 +14,12 @@ tpl [/] {
     when [not(tstp)] {
       msg terminate="yes" "Error: this stylesheet is supposed to be applied to an XMLized TPTP file, but the mandatory tstp document node is missing.";
     }
-    when [not(tstp/formula[@"name" = $conjecture])] {
+    when [not(tstp/formula[@name = $conjecture])] {
       msg terminate="yes" `concat ("Error: there is no formula with the name '", $conjecture, "'.")`;
     }
     otherwise {
       for-each [tstp] {
-        apply [formula[@"name" = $conjecture]];
+        apply [formula[@name = $conjecture]] mode="conjecture";
         if [not($premises = "")] {
           $valid = token-string-is-valid (#string = $premises);
           if [$valid = "1"] {
@@ -40,11 +40,27 @@ tpl [tstp] (#premises-to-emit) {
   } else {
     $head = token-string-head (#token-string = $premises-to-emit);
     $tail = token-string-tail (#token-string = $premises-to-emit);
-    if [formula[@"name" = $head]] {
-      apply [formula[@name = $head][1]];
+    if [formula[@name = $head]] {
+      apply [formula[@name = $head][1]] mode="axiom";
       apply [.] (#premises-to-emit = $tail);
     } else {
       msg terminate="yes" `concat ("Error: there is no formula by the name '", $head, "'.")`;
     }
+  }
+}
+
+tpl [formula] mode="conjecture" {
+  <formula {
+    for-each [@*] { copy-of `.`; }
+    @status = "conjecture";
+    apply [*] mode="copy";
+  }
+}
+
+tpl [formula] mode="axiom" {
+  <formula {
+    for-each [@*] { copy-of `.`; }
+    @status = "axiom";
+    apply [*] mode="copy";
   }
 }
