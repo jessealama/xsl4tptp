@@ -1,6 +1,7 @@
 stylesheet "1.0";
+import "utils/token-strings.xsl";
+import "utils/copy.xsl";
 output method="xml" indent="yes";
-import "utils/token-lists.xsl";
 
 #conjecture = { ""; }
 #premises = { ""; }
