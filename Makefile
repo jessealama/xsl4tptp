@@ -1,10 +1,30 @@
 java = java
 xsltxt.jar = xsltxt.jar
 
+stylesheets = ignore-axioms \
+              ignore-conjecture \
+              name-formulas \
+              normalize-step-names \
+              paradox-interpretation \
+              prepare-problem \
+              render-tptp \
+              sort-tstp \
+              tptp-info \
+              tptp-to-latex \
+              tptp-to-lisp \
+              tstp-dependencies \
+              used-premises
+
+xsls = $(addsuffix .xsl,$(stylesheets))
+xsltxts = $(addsuffix .xsltxt,$(stylesheets))
+editable-files = $(xsltxts) Makefile .gitignore $(xsls)
+emacs-backups = $(addsuffix ~,$(editable-files))
+
 %.xsl: %.xsltxt
 	$(java) -jar $(xsltxt.jar) toXSL $*.xsltxt $*.xsl || (rm -f $*.xsl; false);
 
-all: name-formulas.xsl ignore-axioms.xsl ignore-conjecture.xsl normalize-step-names.xsl sort-tstp.xsl tstp-dependencies.xsl render-tptp.xsl tptp-info.xsl paradox-interpretation.xsl tptp-to-lisp.xsl used-premises.xsl tptp-to-latex.xsl
+all: $(xsls)
 
 clean:
-	rm -f *.xsl
+	rm -f $(emacs-backups)
+	rm -f $(xsls)
