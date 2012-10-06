@@ -1,0 +1,49 @@
+stylesheet "1.0";
+output method="xml" indent="yes";
+import "utils/token-lists.xsl";
+
+#conjecture = { ""; }
+#premises = { ""; }
+
+tpl [/] {
+  choose {
+    when [$conjecture = ""] {
+      msg terminate="yes" "Error: a (name for a) conjecture formula must be supplied.";
+    }
+    when [not(tstp)] {
+      msg terminate="yes" "Error: this stylesheet is supposed to be applied to an XMLized TPTP file, but the mandatory tstp document node is missing.";
+    }
+    when [not(tstp/formula[@"name" = $conjecture])] {
+      msg terminate="yes" `concat ("Error: there is no formula with the name '", $conjecture, "'.")`;
+    }
+    otherwise {
+      for-each [tstp] {
+        apply [formula[@"name" = $conjecture]];
+        if [not($premises = "")] {
+          $valid = token-string-is-valid (#string = $premises);
+          if [$valid = "1"] {
+            apply [.] (#premises-to-emit = $premises);
+          } else {
+            msg terminate="yes" `concat ("Error: '", $premises, "' is not a valid token string.")`;
+          }
+        }
+      }
+    }
+  }
+}
+
+tpl [tstp] (#premises-to-emit) {
+  $empty = token-string-is-empty (#token-string = $premises-to-emit);
+  if [$empty = "1"] {
+    // done
+  } else {
+    $head = token-string-head (#token-string = $premises-to-emit);
+    $tail = token-string-tail (#token-string = $premises-to-emit);
+    if [formula[@"name" = $head]] {
+      apply [formula[@name = $head][1]];
+      apply [.] (#premises-to-emit = $tail);
+    } else {
+      msg terminate="yes" `concat ("Error: there is no formula by the name '", $head, "'.")`;
+    }
+  }
+}
