@@ -1,0 +1,636 @@
+stylesheet "1.0";
+
+output method="xml" encoding="utf-8" indent="yes";
+output doctype-public="-//W3C//DTD XHTML 1.1//EN";
+output doctype-system="http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd";
+output omit-xml-declaration="no";
+
+include ../utils/die.xsl;
+
+tpl list (#separ, #elems) {
+ for-each [$elems] {
+  apply[.]; if [not(position()=last())] { copy-of $separ; } }
+}
+
+$lcletters= { "abcdefghijklmnopqrstuvwxyz"; }
+$ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
+
+tpl uppercase (#string) { `translate($string, $lcletters, $ucletters)`; }
+
+tpl [/] {
+  if [not(tstp)] {
+    die (#message = "The required tstp element is missing!");
+  }
+  apply [tstp];
+}
+
+tpl [tstp] {
+  <html {
+    @"xmlns" = "http://www.w3.org/1999/xhtml";
+    @xml:lang = "en";
+    @"lang" = "en";
+    <head {
+      <meta {
+        @http-equiv = "content-type";
+        @content = "text/html; charset=UTF-8";
+      }
+      <title {
+        "hey there";
+      }
+      <link {
+        @rel = "stylesheet";
+        @type = "text/css";
+        @href = "tstp.css";
+      }
+    }
+    <body {
+      <table {
+        @class = "tstp-problem";
+        @rules = "all";
+        if [comment] {
+          @summary = `comment[1]/text()`;
+          <caption {
+            @class = "tstp-problem-caption";
+            apply [comment[1]];
+          }
+        }
+        <colgroup {
+          <col;
+          <col;
+          <col;
+          <col;
+        }
+        <thead {
+          <tr {
+            <th { "Name"; }
+            <th { "Status"; }
+            <th { "Formula"; }
+            <th { "Source"; }
+	    <th { "Users"; }
+          }
+        }
+        if [formula[source/non-logical-data[@name = "file"]]] {
+          <tbody {
+            apply [formula[source/non-logical-data[@name = "file"]]];
+          }
+        }
+        if [formula[not(source/non-logical-data[@name = "file"])]] {
+          <tbody {
+            apply [formula[not(source/non-logical-data[@name = "file"])]];
+          }
+        }
+      }
+    }
+  }
+}
+
+tpl [comment] {
+  `.`;
+}
+
+key "formulas" [/tstp/formula[@name]] `@name`;
+key "symbols" [/tstp/formula/source[descendant::non-logical-data[@name = "new_symbol"]]] `descendant::non-logical-data[@name = "new_symbol"]/non-logical-data/@name`;
+
+tpl [formula[not(@name)]] {
+  die (#message = "We require that a formula element have a name attribute!");
+}
+
+tpl [formula[not(@status)]] {
+  die (#message = "We require that a formula element have a status attribute!");
+}
+
+tpl [defined-predicate[not(@name)]] {
+  die (#message = "We require that a defined-predicate element have a name attribute!");
+}
+
+tpl [defined-predicate[@name = "true"]] {
+  "&#8868;";
+}
+
+tpl [defined-predicate[@name = "false"]] {
+  "&#perp;";
+}
+
+tpl [defined-predicate[@name and not(@name = "true") and not(@name = "false")]] {
+  $n = `@name`;
+  $message = `concat ("We don't know how to deal with a defined predicate whose name is not 'true' (the name is '", $n, "'")`;
+  die (#message = $message);
+}
+
+tpl [formula[@name]] {
+  $n = `@name`;
+  $context = `.`;
+  <tr {
+    <td {
+      @"id" = `@name`;
+      @class = "formula-name";
+      `$n`;
+     }
+     <td {
+       @class = "status";
+       `@status`;
+     }
+     <td {
+      @class = "formula";
+      apply [*[1]];
+    }
+    <td {
+      @class = "source";
+      // If we are introducing a new constant, anchor this table cell
+      if [source[child::non-logical-data[@name = "introduced" and child::non-logical-data[@name = "definition"] and child::non-logical-data[child::non-logical-data[@name = "new_symbol"]]]]] {
+        @"id" = `source/non-logical-data[@name = "introduced"]/non-logical-data[position() = last()]/non-logical-data[@name = "new_symbol"]/non-logical-data[position() = last()]/@name`;
+      }
+      apply [source];
+    }
+    <td {
+      if [//formula[not(self::* = $context) and @name and descendant::non-logical-data[@name = $n and not(ancestor::useful-info)]]] {
+        <ul {
+          for-each [//formula[not(self::* = $context) and @name and descendant::non-logical-data[@name = $n and not(ancestor::useful-info)]]] {
+            $formula-name = `@name`;
+            <li {
+              <a {
+                @href = `concat ("#", $formula-name)`;
+                `$formula-name`;
+              }
+            }
+          }
+        }
+      } else {
+        <em { "(none)"; }
+      }
+    }
+  }
+}
+
+// variables
+
+tpl [variable[not(@name)]] {
+  die (#message = "We require that variables have a name attribute!");
+}
+
+tpl [variable[@name]] {
+  <span {
+    @class = "variable";
+    `@name`;
+  }
+}
+
+// formula shapes
+
+tpl [predicate[not(@name)]] {
+  die (#message = "We require that a variable have a name attribute!");
+}
+
+tpl [predicate[@name = "=" and not(child::*[2])]] {
+  die (#message = "We require that an equality predicate element have at least two children!");
+}
+
+tpl [predicate[@name = "=" and child::*[3]]] {
+  die (#message = "We require that an equality predicate element have fewer than three children!");
+}
+
+tpl [predicate[@name = "="]] {
+  "(";
+  apply [*[1]];
+  <span {
+    @class = "predicate";
+    " = ";
+  }
+  apply [*[2]];
+  ")";
+}
+
+tpl [predicate[@name and not(@name = "=")]] {
+  $n = `@name`;
+  $constructor = `substring-before ($n, "_")`;
+  $article = `substring-after ($n, "_")`;
+  <span {
+    @class = "predicate";
+    <span {
+      @class = "constructor";
+      `$constructor`;
+    }
+    <sub {
+      <span {
+        @class = "article";
+        `$article`;
+      }
+    }
+  }
+  "(";
+  list (#separ = ", ", #elems = `*`);
+  ")";
+}
+
+tpl [function[not(@name)]] {
+  die (#message = "We require that a function have a name attribute!");
+}
+
+tpl [function[@name]] {
+  $n = `@name`;
+  $constructor = { if [contains ($n, "__")] {
+                     `substring-before ($n, "__")`;
+                   } else {
+                     `substring-before ($n, "_")`;
+                   }
+                 }
+  $article = { if [contains ($n, "__")] {
+                 `substring-after ($n, "__")`;
+               } else {
+                 `substring-after ($n, "_")`;
+               }
+             }
+  <span {
+    @class = "function";
+    <span {
+      @class = "constructor";
+      `$constructor`;
+     }
+    <sub {
+      <span {
+        @class = "article";
+        `$article`;
+      }
+    }
+  }
+  if [*] {
+    "("; list (#separ = ", ", #elems = `*`); ")";
+  }
+}
+
+tpl [*[not(child::*[2])]] mode="binary-connective" {
+  $shape = `local-name (.)`;
+  $message = `concat ("Elements of type '", $shape, "' are intended to represent binary connectives, but we have found such an element that lacks two children")`;
+  die (#message = $message);
+}
+
+tpl [*[child::*[3]]] mode="binary-connective" {
+  $shape = `local-name (.)`;
+  $message = `concat ("Elements of type '", $shape, "' are intended to represent binary connectives, but we have found such an element that has more than two children")`;
+  die (#message = $message);
+}
+
+tpl [*] (#connective) mode="binary-connective" {
+  <table {
+    @class = "binary-connective";
+    <tbody {
+      <tr { <td { apply [*[1]]; } }
+      <tr { <td { `$connective`; } }
+      <tr { <td { apply [*[2]]; } }
+    }
+  }
+}
+
+tpl [implication] {
+  apply [.] (#connective = "&#8594;") mode="binary-connective";
+}
+
+tpl [equivalence] {
+  apply [.] (#connective = "&#8596;") mode="binary-connective";
+}
+
+tpl [disjunction] {
+  apply [.] (#connective = "&#8744;") mode="binary-connective";
+}
+
+tpl [conjunction] {
+  apply [.] (#connective = "&#8743;") mode="binary-connective";
+}
+
+// unary connectives
+
+tpl [*[not(child::*)]] mode="unary-connective" {
+  $shape = `local-name (.)`;
+  $message = `concat ("Elements of type '", $shape, "' are intended to represent unary connectives, but we have found such an element that lacks a child!")`;
+  die (#message = $message);
+}
+
+tpl [*[child::*[3]]] mode="unary-connective" {
+  $shape = `local-name (.)`;
+  $message = `concat ("Elements of type '", $shape, "' are intended to represent unary connectives, but we have found such an element that has more than one child")`;
+  die (#message = $message);
+}
+
+tpl [*] (#connective) mode="unary-connective" {
+  <table {
+    @class = "unary-connective";
+    <tr {
+      <td { `$connective`; }
+      <td {
+        @class = "formula";
+        apply [*[1]];
+      }
+    }
+  }
+}
+
+tpl [negation] {
+  apply [.] (#connective = "&#172;") mode="unary-connective";
+}
+
+// quantifiers
+
+tpl [quantifier[not(@type)]] {
+  die (#message = "Quantifiers must have a type attribute, but we found one that lacks this attribute!");
+}
+
+tpl [quantifier[@type and not(@type = "universal" or @type = "existential")]] {
+  die (#message = "We assume that quantifiers are either universal or existential!");
+}
+
+tpl [quantifer[not(child::variable)]] {
+  die (#message = "We require that quantifiers have at least one variable child!");
+}
+
+tpl [quantifier[not(child::*[2])]] {
+  die (#message = "We require that quantifiers have at least two child elements!");
+}
+
+tpl [quantifier[@type = "universal" or @type = "existential"]] {
+  $type = `@type`;
+  <table {
+    @class = "formula";
+    <tbody {
+      <tr {
+        <td {
+          if [$type = "universal"] {
+            "&#8704;";
+          } else {
+            "&#8707;";
+          }
+        }
+        <td {
+          @class = "variable-list";
+          list (#elems = `variable`, #separ = ", ");
+        }
+        <td {
+          @class = "quantifier-matrix";
+          apply [*[position() = last()]];
+        }
+      }
+    }
+  }
+}
+
+// sources
+
+tpl [*] mode="inference-references" {
+  "References:";
+  if [child::non-logical-data[@name = "inference"]/non-logical-data[position() = last()]/*] {
+    <ul {
+      for-each [non-logical-data[@name = "inference"]/non-logical-data[position() = last()]/*] {
+        <li {
+          apply [.] mode="link";
+        }
+      }
+    }
+  } else {
+    <em { " (none)"; }
+  }
+}
+
+tpl [*] mode="open-assumptions" {
+  "Open assumptions:";
+  if [descendant::non-logical-data[@name = "assumptions"]/non-logical-data/*] {
+    <ul {
+      for-each [descendant::non-logical-data[@name = "assumptions"]/non-logical-data/*] {
+        <li {
+          apply [.] mode="link";
+        }
+      }
+    }
+  } else {
+    <em { " (none)"; }
+  }
+}
+
+tpl [source[child::non-logical-data[@name = "introduced" and child::non-logical-data[@name = "assumption"] and child::non-logical-data[child::non-logical-data[@name = "file"]]]]] {
+  $formula-name = `ancestor::formula/@name`;
+  "Assumption about ";
+  $first-char-as-string = `substring ($formula-name, 1, 1)`;
+  choose {
+    when [$first-char-as-string = "d"] {
+      apply [non-logical-data[@name = "introduced"]/non-logical-data[position() = last()]/non-logical-data[@name = "file"]/non-logical-data[position() = last()]] mode="link";
+    }
+    when [$first-char-as-string = "e"] {
+      $after-first-char = `substring-after ($formula-name, $first-char-as-string)`;
+      $c-instead-of-e = `concat ("c", $after-first-char)`;
+      $constant = `substring-before ($c-instead-of-e, "__")`;
+      $article = `substring-after ($c-instead-of-e, "__")`;
+      <a {
+        @href = `concat ("#", $c-instead-of-e)`;
+        <span {
+          @class = "constructor";
+          `$constant`;
+        }
+        <sub {
+          <span {
+            @class = "article";
+            $article;
+          }
+        }
+      }
+    }
+    otherwise {
+      $message = `concat ("We assume that the first character of the name of an introduced assumption formula is either 'd' or 'e', but the first char of the current formula name '", $formula-name, "' is '", $first-char-as-string, "'")`;
+      die (#message = $message);
+    }
+  }
+}
+
+tpl [source[child::non-logical-data[@name = "introduced" and child::non-logical-data[@name = "definition"] and child::non-logical-data[child::non-logical-data[@name = "new_symbol"]]]]] {
+  "New constant: ";
+  apply [non-logical-data[@name = "introduced"]/non-logical-data[position() = last()]/non-logical-data[@name = "new_symbol"]/non-logical-data[position() = last()]] mode="link";
+}
+
+tpl [source[child::non-logical-data[@name = "inference" and child::non-logical-data[@name = "discharge_asm"]]]] {
+  <span {
+    @class = "keyword";
+    "discharge assumption";
+  }
+  <br;
+  <br;
+  apply [.] mode="inference-references";
+  apply [.] mode="open-assumptions";
+}
+
+tpl [source[child::non-logical-data[@name = "inference" and child::non-logical-data[@name = "conclusion"]]]] {
+  <span {
+    @class = "keyword";
+    "conclusion";
+  }
+  <br;
+  <br;
+  apply [.] mode="inference-references";
+  apply [.] mode="open-assumptions";
+}
+
+tpl [source[child::non-logical-data[@name = "inference" and child::non-logical-data[@name = "mizar_by" or @name = "mizar_from"]]]] {
+  <span {
+    @class = "keyword";
+    "by/from";
+  }
+  <br;
+  <br;
+  apply [.] mode="inference-references";
+  apply [.] mode="open-assumptions";
+}
+
+tpl [source[child::non-logical-data[@name = "introduced" and child::non-logical-data[@name = "tautology"]]]] {
+  "Reference: "; apply [non-logical-data[@name = "introduced"]/non-logical-data/non-logical-data[@name = "file"]/non-logical-data[position() = last()]] mode="link";
+}
+
+tpl [source[child::non-logical-data[@name = "file" and not(child::non-logical-data[2])]]] {
+  die (#message = "We require that non-logical-data elements whose name is 'file' have at least two non-logical-data child elements!");
+}
+
+tpl first-numeral-helper (#string) {
+  if [$string = ""] {
+    die (#message = "We cannot determine the first numeral of the empty string!");
+  } else {
+    $first-char-as-string = `substring ($string, 1, 1)`;
+    if [$first-char-as-string = "0"
+        or $first-char-as-string = "1"
+        or $first-char-as-string = "2"
+        or $first-char-as-string = "3"
+        or $first-char-as-string = "4"
+        or $first-char-as-string = "5"
+        or $first-char-as-string = "6"
+        or $first-char-as-string = "7"
+        or $first-char-as-string = "8"
+        or $first-char-as-string = "9"] {
+      $first-char-as-string;
+    } else {
+      first-numeral-helper (#string = `substring-after ($string, $first-char-as-string)`);
+    }
+  }
+}
+
+// the position of the first numeral in a string
+tpl first-numeral (#string) {
+  // sanity check: $string does contain a numeral
+  if [contains ($string, "0")
+      or contains ($string, "1")
+      or contains ($string, "2")
+      or contains ($string, "3")
+      or contains ($string, "4")
+      or contains ($string, "5")
+      or contains ($string, "6")
+      or contains ($string, "7")
+      or contains ($string, "8")
+      or contains ($string, "9")] {
+    first-numeral-helper (#string = $string);
+  } else {
+    $message = `concat ("We cannot determine the first numeral of the string '", $string, "', because it contains no numerals")`;
+    die (#message = $message);
+  }
+}
+
+tpl [source[child::non-logical-data[@name = "file" and child::non-logical-data[not(@name)]]]] {
+  die (#message = "We require that non-logical-data elements whose name is 'file' have non-logical-data child elements that have a name attribute!");
+}
+
+tpl [source[child::non-logical-data[@name = "file"]]] {
+  $article = `non-logical-data[@name = "file"]/non-logical-data[1]/@name`;
+  <a {
+    @href = `concat ("#", $article)`;
+    <span {
+      @class = "article";
+      `$article`;
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////
+/// Non-logical data
+//////////////////////////////////////////////////////////////////////
+
+tpl [non-logical-data[not(@name)]] {
+  "["; list (#elems = `*`, #separ = ","); "]";
+}
+
+tpl [non-logical-data[@name and not(parent::source)]] {
+  "[";
+  $n = `@name`;
+  if [@name and (key ("formulas", $n) or key ("symbols", $n))] {
+    apply [.] mode="link";
+  } else {
+    `@name`;
+  }
+  for-each [non-logical-data] {
+    apply [.];
+    if [not(position()=last())] {
+      ", ";
+    }
+  }
+  "]";
+}
+
+tpl [non-logical-data[@name = "status"]] {
+  // ignore
+}
+
+tpl [non-logical-data[descendant::non-logical-data[@name = "new_symbol"]]] {
+  apply [descendant::non-logical-data[@name = "new_symbol"]];
+}
+
+tpl [non-logical-data[@name = "new_symbol"]] {
+  $symbol = `non-logical-data[1]/@name`;
+  "fresh symbol: ";
+  <span {
+    @class = "symbol";
+    `$symbol`;
+  }
+}
+
+tpl [non-logical-data[@name = "inference" and child::non-logical-data[@name = "let"]]] {
+  <span {
+    @class = "rule-of-inference";
+    "&#8704;-I";
+  }
+  " from ";
+  list (#elems = `*[position() = last()]/*`, #separ = ", ");
+
+}
+
+tpl [non-logical-data[not(@name)]] mode="link" {
+  die (#message = "We cannot link a non-logical-data element that lacks a name attribute!");
+}
+
+tpl [non-logical-data[@name]] mode="link" {
+  $n = `@name`;
+  <a {
+    @href = `concat ("#", $n)`;
+    if [starts-with ($n, "c") and contains ($n, "__")] { // constant
+      $constant = `substring-before ($n, "__")`;
+      $article = `substring-after ($n, "__")`;
+      <span {
+        @class = "constructor";
+        `$constant`;
+      }
+      <sub {
+        <span {
+          @class = "article";
+          `$article`;
+        }
+      }
+    } else {
+      `$n`;
+    }
+  }
+}
+
+tpl [useful-info] {
+  <div {
+    @class = "useful-info";
+    apply [*];
+  }
+}
+
+tpl [number[not(@name)]] {
+  die (#message = "We require that numbe elements have a name attribute!");
+}
+
+tpl [number[@name]] {
+  `@name`;
+}

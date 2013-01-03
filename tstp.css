@@ -1,0 +1,65 @@
+td.comment {
+	display: none;
+}
+
+caption.tstp-problem-caption {
+	caption-side: bottom;	
+}
+
+table.tstp-problem {
+	border-style: solid;
+}
+
+table.tstp-problem tbody tr {
+	border-bottom: solid thin black;
+	border-left: solid thin black;
+}
+
+td.formula {
+	text-align:center;	
+}
+
+span.variable {
+	font-style: italic;
+}
+
+td.formula-name {
+	text-align: center;
+	font-family: "Courier New", Courier, mono;
+}
+
+span.article {
+	text-transform: uppercase;
+	font: smaller "Courier New", Courier, mono;
+}
+
+span.constructor {
+	font-weight: bold;
+}
+
+td.variable-list {
+	white-space: nowrap;
+}
+
+table.formula tbody td {
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+table.binary-connective tbody tr td {
+	white-space: nowrap;
+	text-align: center;
+}
+
+table.binary-connective {
+ 	border-left-style: solid;
+	border-right-style: solid;
+	border-right-width: thin;
+	border-left-width: thin;
+	border-width: thin;
+	border-style: solid;
+}
+
+td.status {
+	text-align: center;
+}
