@@ -83,25 +83,21 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
       for-each [non-logical-data[1]] {
         for-each [non-logical-data[@name]] {
           $dependency-n = `@name`;
-          if [ancestor::tstp[formula/@name = $n]] {
-            for-each [ancestor::tstp[formula/@name = $n]] {
-              apply [.] mode="strip-extras";
+          for-each [ancestor::tstp] {
+            if [formula/@name = $dependency-n] {
+              for-each [formula/@name = $dependency-n] {
+                apply [.] mode="strip-extras";
+              }
+            } else {
+              $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
+              msg terminate="yes" $message;
             }
-          } else {
-            $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
-            msg terminate="yes" $message;
           }
         }
       }
     }
   }
 }
-
-
-
-
-
-
 
 tpl [formula] mode="axioms"
 {
@@ -132,22 +128,21 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="axioms"
       for-each [non-logical-data[1]] {
         for-each [non-logical-data[@name]] {
           $dependency-n = `@name`;
-          if [ancestor::tstp[formula/@name = $n]] {
-            for-each [ancestor::tstp[formula/@name = $n]] {
-              apply [.] mode="strip-extras";
+          for-each [ancestor::tstp] {
+            if [formula/@name = $dependency-n] {
+              for-each [formula/@name = $dependency-n] {
+                apply [.] mode="strip-extras";
+              }
+            } else {
+              $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
+              msg terminate="yes" $message;
             }
-          } else {
-            $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
-            msg terminate="yes" $message;
           }
         }
       }
     }
   }
 }
-
-
-
 
 tpl [*] mode="strip-extras"
 {
