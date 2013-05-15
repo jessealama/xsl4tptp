@@ -9,3 +9,9 @@ leibniz.xml : leibniz.p
 
 %.ax : %.ax.xml $(render-tptp-stylesheet)
 	xsltproc --output $@ $(render-tptp-stylesheet) $< || rm -f $@
+
+%.model : %.ax
+	paradox --model $< > $@ || rm -f $@
+
+%.eproof : %.p
+	eproof --tstp-format --auto $< > $@ || rm -f $@
