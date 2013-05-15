@@ -195,8 +195,6 @@
         <xsl:copy-of select="."/>
       </xsl:for-each>
       <xsl:apply-templates select="*[1]" mode="strip-extras"/>
-      <xsl:apply-templates select="*[2]" mode="strip-extras"/>
-      <xsl:apply-templates select="*[3]" mode="strip-extras"/>
     </xsl:element>
   </xsl:template>
 </xsl:stylesheet>

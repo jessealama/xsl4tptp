@@ -159,7 +159,5 @@ tpl [formula] mode="strip-extras"
   <formula {
     for-each [@*] { copy-of `.`; }
     apply [*[1]] mode="strip-extras";
-    apply [*[2]] mode="strip-extras";
-    apply [*[3]] mode="strip-extras";
   }
 }
