@@ -89,15 +89,7 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
                 apply [.] mode="strip-extras";
               }
             } else {
-              $message = `concat ("Error: formula", "
-", "
-", "  ", $n, "
-", "
-", "depends on", "
-", "
-", "  ", $dependency-n, "
-", "
-", "but there appears to be no formula with that name.")`;
+              $message = `concat ("Error: formula", \n, \n, "  ", $n, \n, \n, "depends on", \n, \n, "  ", $dependency-n, \n, \n, "but there appears to be no formula with that name.")`;
               msg terminate="yes" $message;
             }
           }
@@ -142,15 +134,7 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="axioms"
                 apply [.] mode="strip-extras";
               }
             } else {
-              $message = `concat ("Error: formula", "
-", "
-", "  ", $n, "
-", "
-", "depends on", "
-", "
-", "  ", $dependency-n, "
-", "
-", "but there appears to be no formula with that name.")`;
+              $message = `concat ("Error: formula", \n, \n, "  ", $n, \n, \n, "depends on", \n, \n, "  ", $dependency-n, \n, \n, "but there appears to be no formula with that name.")`;
               msg terminate="yes" $message;
             }
           }

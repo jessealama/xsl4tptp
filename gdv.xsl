@@ -113,15 +113,15 @@
                   </xsl:for-each>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
-&quot;, &quot;
-&quot;, &quot;  &quot;, $n, &quot;
-&quot;, &quot;
-&quot;, &quot;depends on&quot;, &quot;
-&quot;, &quot;
-&quot;, &quot;  &quot;, $dependency-n, &quot;
-&quot;, &quot;
-&quot;, &quot;but there appears to be no formula with that name.&quot;)"/>
+                  <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, 
+, 
+, &quot;  &quot;, $n, 
+, 
+, &quot;depends on&quot;, 
+, 
+, &quot;  &quot;, $dependency-n, 
+, 
+, &quot;but there appears to be no formula with that name.&quot;)"/>
                   <xsl:message terminate="yes">
                     <xsl:value-of select="$message"/>
                   </xsl:message>
@@ -173,15 +173,15 @@
                   </xsl:for-each>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
-&quot;, &quot;
-&quot;, &quot;  &quot;, $n, &quot;
-&quot;, &quot;
-&quot;, &quot;depends on&quot;, &quot;
-&quot;, &quot;
-&quot;, &quot;  &quot;, $dependency-n, &quot;
-&quot;, &quot;
-&quot;, &quot;but there appears to be no formula with that name.&quot;)"/>
+                  <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, 
+, 
+, &quot;  &quot;, $n, 
+, 
+, &quot;depends on&quot;, 
+, 
+, &quot;  &quot;, $dependency-n, 
+, 
+, &quot;but there appears to be no formula with that name.&quot;)"/>
                   <xsl:message terminate="yes">
                     <xsl:value-of select="$message"/>
                   </xsl:message>
