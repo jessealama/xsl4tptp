@@ -14,12 +14,12 @@ all: problems
 
 theorems.txt : leibniz.p
 	tptp4X -c -x -umachine $< > $@1 || (rm -f $@1; false)
-	grep --fixed-string ',theorem,' $@1 > $@ || (rm -f $@; false)
+	(grep --fixed-string ',theorem,' $@1 | cut -f 1 -d ',' | cut -f 2 -d '(') > $@ || (rm -f $@; false)
 	rm -f $@1
 
 lemmas.txt : leibniz.p
 	tptp4X -c -x -umachine $< > $@1 || rm -f $@1
-	grep --fixed-string ',lemma,' $@1 > $@ || (rm -f $@; false)
+	(grep --fixed-string ',lemma,' $@1 | cut -f 1 -d ',' | cut -f 2 -d '(' > $@) || (rm -f $@; false)
 	rm -f $@1
 
 problems.txt : theorems.txt lemmas.txt
