@@ -1,4 +1,4 @@
-.PRECIOUS:
+.SECONDARY:
 
 gdv-stylesheet = $(srcdir)/gdv.xsl
 render-tptp-stylesheet = $(srcdir)/render-tptp.xsl
