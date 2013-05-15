@@ -55,14 +55,16 @@
     </xsl:if>
     <xsl:choose>
       <xsl:when test="formula[@name = $problem]">
-        <xsl:choose>
-          <xsl:when test="$action = &quot;problem&quot;">
-            <xsl:apply-templates select="formula[@name = $problem]" mode="problem"/>
-          </xsl:when>
-          <xsl:when test="$action = &quot;axioms&quot;">
-            <xsl:apply-templates select="formula[@name = $problem]" mode="axioms"/>
-          </xsl:when>
-        </xsl:choose>
+        <xsl:element name="tstp">
+          <xsl:choose>
+            <xsl:when test="$action = &quot;problem&quot;">
+              <xsl:apply-templates select="formula[@name = $problem]" mode="problem"/>
+            </xsl:when>
+            <xsl:when test="$action = &quot;axioms&quot;">
+              <xsl:apply-templates select="formula[@name = $problem]" mode="axioms"/>
+            </xsl:when>
+          </xsl:choose>
+        </xsl:element>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="message" select="concat (&quot;No formula by the name &apos;&quot;, $problem, &quot;&apos;.&quot;)"/>

@@ -39,12 +39,14 @@ tpl [tstp]
     msg terminate="yes" $message;
   }
   if [formula[@name = $problem]] {
-    choose {
-      when [$action = "problem"] {
-        apply [formula[@name = $problem]] mode="problem";
-      }
-      when [$action = "axioms"] {
-        apply [formula[@name = $problem]] mode="axioms";
+    <tstp {
+      choose {
+        when [$action = "problem"] {
+          apply [formula[@name = $problem]] mode="problem";
+        }
+        when [$action = "axioms"] {
+          apply [formula[@name = $problem]] mode="axioms";
+        }
       }
     }
   } else {
