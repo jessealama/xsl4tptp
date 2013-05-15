@@ -1,0 +1,116 @@
+stylesheet "1.0";
+output method="text";
+
+//////////////////////////////////////////////////////////////////////
+// Parameters
+//////////////////////////////////////////////////////////////////////
+
+// the name of the problem to inspect
+#problem = { ""; }
+
+// the action to take: extract axioms only, or create a problem
+// Only two values are acceptable: 'axioms' and 'problem'
+#action = { "axioms"; }
+
+//////////////////////////////////////////////////////////////////////
+// Templates
+//////////////////////////////////////////////////////////////////////
+
+tpl [/]
+{
+  if [tstp] {
+    apply [tstp];
+  } else {
+    msg terminate="yes" "Error: the tstp document element is missing.";
+  }
+}
+
+tpl [tstp]
+{
+  // Is the parameter sane?
+  if [$problem = ""] {
+    msg terminate="yes" "Error: the empty string is not a suitable problem.";
+  }
+  if [$action = ""] {
+    msg terminate="yes" "Error: the empty string is not an appropriate value for the action paramter.  The acceptable values are 'problem' (to extract a problem) and 'axioms' (to extract just the axioms for a problem).";
+  }
+  if [not($action = "problem") and not($action = "axioms")] {
+    $message = `concat ("Error: inappropriate value", "\n", "\n", "  ", $action, "\n", "\n", "for the action parameter.  The acceptable values are 'problem' (to extract a problem) and 'axioms' (to extract just the axioms for a problem).")`;
+    msg terminate="yes" $message;
+  }
+  if [formula[@name = $problem]] {
+    choose {
+      when [$action = "problem"] {
+        apply [formula[@name = $problem]] mode="problem";
+      }
+      when [$action = "axioms"] {
+        apply [formula[@name = $problem]] mode="axioms";
+      }
+    }
+  } else {
+    $message = `concat ("No formula by the name '", $problem, "'.")`;
+    msg terminate="yes" $message;
+  }
+}
+
+tpl [formula] mode="problem"
+{
+  $s = `@status`;
+  $message = `concat ("Error: we arrived at an unhandled node of status '", $s, "'.")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "definition"]] mode="problem"
+{
+  $n = `@name`;
+  $message = `concat ("Error: ", $n, " is the name of a definition.  Why, then, are we trying to construct a theorem proving problem for it?")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "axiom"]] mode="problem"
+{
+  $n = `@name`;
+  $message = `concat ("Error: ", $n, " is the name of an axiom.  Why, then, are we trying to construct a theorem proving problem for it?")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
+{
+  $n = `@name`;
+  apply [.] mode="strip-extras";
+  for-each [source] {
+    for-each [non-logical-data[@name = "depends"]] {
+      for-each [non-logical-data[@name]] {
+        $dependency-n = `@name`;
+        if [ancestor::tstp[formula/@name = $n]] {
+          for-each [ancestor::tstp[formula/@name = $n]] {
+            apply [.] mode="strip-extras";
+          }
+        } else {
+          $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
+          msg terminate="yes" $message;
+        }
+      }
+    }
+  }
+}
+
+tpl [*] mode="strip-extras"
+{
+  // By default, just copy and recurse
+  $n = `name (.)`;
+  <$n {
+    for-each [@*] { copy-of `.`; }
+    apply [*] mode="strip-extras";
+  }
+}
+
+tpl [formula] mode="strip-extras"
+{
+  <formula {
+    for-each [@*] { copy-of `.`; }
+    apply [*[1]] mode="strip-extras";
+    apply [*[2]] mode="strip-extras";
+    apply [*[3]] mode="strip-extras";
+  }
+}
