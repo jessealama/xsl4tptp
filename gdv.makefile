@@ -27,7 +27,7 @@ problems.txt : theorems.txt lemmas.txt
 	cat theorems.txt lemmas.txt > $@
 
 problems: problems.txt
-	cat problems.txt | sed -e 's/$$/.eproof/' | xargs $(MAKE) --makefile=$(gdv-makefile)
+	cat problems.txt | sed -e 's/$$/.eproof/' | xargs $(MAKE) -C `pwd` --makefile=$(gdv-makefile)
 
 leibniz.xml : leibniz.p
 	tptp4X -c -x -umachine -fxml leibniz.p > leibniz.xml || rm -f leibniz.xml
