@@ -8,8 +8,8 @@ gdv-makefile = $(srcdir)/gdv.makefile
 
 # functions
 extract-axioms = xsltproc --output $2 --stringparam action "axioms" --stringparam problem "$1" $(gdv-stylesheet) leibniz.xml || (rm -f $2; false)
-extract-problem = xsltproc --output $2 --stringparam action "problem" --stringparam problem "$1" $(gdv-stylesheet) leibniz.xml || rm -f $2
-render-tptp = xsltproc --output $2 $(render-tptp-stylesheet) $1 || rm -f $2
+extract-problem = xsltproc --output $2 --stringparam action "problem" --stringparam problem "$1" $(gdv-stylesheet) leibniz.xml || (rm -f $2; false)
+render-tptp = xsltproc --output $2 $(render-tptp-stylesheet) $1 || (rm -f $2; false)
 
 all: problems
 
