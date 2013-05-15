@@ -1,5 +1,5 @@
 stylesheet "1.0";
-output method="text";
+output method="xml" indent="yes";
 
 //////////////////////////////////////////////////////////////////////
 // Parameters
