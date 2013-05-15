@@ -4,6 +4,7 @@
 
 gdv-stylesheet = $(srcdir)/gdv.xsl
 render-tptp-stylesheet = $(srcdir)/render-tptp.xsl
+gdv-makefile = $(srcdir)/gdv.makefile
 
 # functions
 extract-axioms = xsltproc --output $2 --stringparam action "axioms" --stringparam problem "$1" $(gdv-stylesheet) leibniz.xml || (rm -f $2; false)
@@ -26,7 +27,7 @@ problems.txt : theorems.txt lemmas.txt
 	cat theorems.txt lemmas.txt > $@
 
 problems: problems.txt
-	cat problems.txt | sed -e 's/$$/.eproof/' | xargs $(MAKE)
+	cat problems.txt | sed -e 's/$$/.eproof/' | xargs $(MAKE) --makefile=$(gdv-makefile)
 
 leibniz.xml : leibniz.p
 	tptp4X -c -x -umachine -fxml leibniz.p > leibniz.xml || rm -f leibniz.xml
