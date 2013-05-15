@@ -107,8 +107,8 @@
             <xsl:variable name="dependency-n" select="@name"/>
             <xsl:for-each select="ancestor::tstp">
               <xsl:choose>
-                <xsl:when test="formula/@name = $dependency-n">
-                  <xsl:for-each select="formula/@name = $dependency-n">
+                <xsl:when test="formula[@name = $dependency-n]">
+                  <xsl:for-each select="formula[@name = $dependency-n]">
                     <xsl:apply-templates select="." mode="strip-extras"/>
                   </xsl:for-each>
                 </xsl:when>
@@ -167,8 +167,8 @@
             <xsl:variable name="dependency-n" select="@name"/>
             <xsl:for-each select="ancestor::tstp">
               <xsl:choose>
-                <xsl:when test="formula/@name = $dependency-n">
-                  <xsl:for-each select="formula/@name = $dependency-n">
+                <xsl:when test="formula[@name = $dependency-n]">
+                  <xsl:for-each select="formula[@name = $dependency-n]">
                     <xsl:apply-templates select="." mode="strip-extras"/>
                   </xsl:for-each>
                 </xsl:when>

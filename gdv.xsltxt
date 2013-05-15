@@ -84,8 +84,8 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
         for-each [non-logical-data[@name]] {
           $dependency-n = `@name`;
           for-each [ancestor::tstp] {
-            if [formula/@name = $dependency-n] {
-              for-each [formula/@name = $dependency-n] {
+            if [formula[@name = $dependency-n]] {
+              for-each [formula[@name = $dependency-n]] {
                 apply [.] mode="strip-extras";
               }
             } else {
@@ -129,8 +129,8 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="axioms"
         for-each [non-logical-data[@name]] {
           $dependency-n = `@name`;
           for-each [ancestor::tstp] {
-            if [formula/@name = $dependency-n] {
-              for-each [formula/@name = $dependency-n] {
+            if [formula[@name = $dependency-n]] {
+              for-each [formula[@name = $dependency-n]] {
                 apply [.] mode="strip-extras";
               }
             } else {
