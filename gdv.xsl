@@ -130,6 +130,62 @@
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template match="formula" mode="axioms">
+    <xsl:variable name="s" select="@status"/>
+    <xsl:variable name="message" select="concat (&quot;Error: we arrived at an unhandled node of status &apos;&quot;, $s, &quot;&apos;.&quot;)"/>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$message"/>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="formula[@status = &quot;definition&quot;]" mode="axioms">
+    <xsl:variable name="n" select="@name"/>
+    <xsl:variable name="message" select="concat (&quot;Error: &quot;, $n, &quot; is the name of a definition.  Why, then, are we trying to extract the axioms of a theorem proving problem for it?&quot;)"/>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$message"/>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="formula[@status = &quot;axiom&quot;]" mode="problem">
+    <xsl:variable name="n" select="@name"/>
+    <xsl:variable name="message" select="concat (&quot;Error: &quot;, $n, &quot; is the name of an axiom.  Why, then, are we trying to extract the axioms of a theorem proving problem for it?&quot;)"/>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$message"/>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="formula[@status = &quot;lemma&quot; or @status = &quot;theorem&quot;]" mode="axioms">
+    <xsl:variable name="n" select="@name"/>
+    <xsl:for-each select="source">
+      <xsl:for-each select="non-logical-data[@name = &quot;depends&quot;]">
+        <xsl:for-each select="non-logical-data[@name]">
+          <xsl:variable name="dependency-n" select="@name"/>
+          <xsl:choose>
+            <xsl:when test="ancestor::tstp[formula/@name = $n]">
+              <xsl:for-each select="ancestor::tstp[formula/@name = $n]">
+                <xsl:apply-templates select="." mode="strip-extras"/>
+              </xsl:for-each>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
+&quot;, &quot;
+&quot;, &quot;  &quot;, $n, &quot;
+&quot;, &quot;
+&quot;, &quot;depends on&quot;, &quot;
+&quot;, &quot;
+&quot;, &quot;  &quot;, $dependency-n, &quot;
+&quot;, &quot;
+&quot;, &quot;but there appears to be no formula with that name.&quot;)"/>
+              <xsl:message terminate="yes">
+                <xsl:value-of select="$message"/>
+              </xsl:message>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:for-each>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:template>
+
   <xsl:template match="*" mode="strip-extras">
     <!-- By default, just copy and recurse -->
     <xsl:variable name="n" select="name (.)"/>

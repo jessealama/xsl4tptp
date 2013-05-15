@@ -95,6 +95,57 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
   }
 }
 
+
+
+
+
+
+
+tpl [formula] mode="axioms"
+{
+  $s = `@status`;
+  $message = `concat ("Error: we arrived at an unhandled node of status '", $s, "'.")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "definition"]] mode="axioms"
+{
+  $n = `@name`;
+  $message = `concat ("Error: ", $n, " is the name of a definition.  Why, then, are we trying to extract the axioms of a theorem proving problem for it?")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "axiom"]] mode="problem"
+{
+  $n = `@name`;
+  $message = `concat ("Error: ", $n, " is the name of an axiom.  Why, then, are we trying to extract the axioms of a theorem proving problem for it?")`;
+  msg terminate="yes" $message;
+}
+
+tpl [formula[@status = "lemma" or @status = "theorem"]] mode="axioms"
+{
+  $n = `@name`;
+  for-each [source] {
+    for-each [non-logical-data[@name = "depends"]] {
+      for-each [non-logical-data[@name]] {
+        $dependency-n = `@name`;
+        if [ancestor::tstp[formula/@name = $n]] {
+          for-each [ancestor::tstp[formula/@name = $n]] {
+            apply [.] mode="strip-extras";
+          }
+        } else {
+          $message = `concat ("Error: formula", "\n", "\n", "  ", $n, "\n", "\n", "depends on", "\n", "\n", "  ", $dependency-n, "\n", "\n", "but there appears to be no formula with that name.")`;
+          msg terminate="yes" $message;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
 tpl [*] mode="strip-extras"
 {
   // By default, just copy and recurse
