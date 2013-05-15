@@ -102,16 +102,17 @@
     <xsl:apply-templates select="." mode="strip-extras"/>
     <xsl:for-each select="source">
       <xsl:for-each select="non-logical-data[@name = &quot;depends&quot;]">
-        <xsl:for-each select="non-logical-data[@name]">
-          <xsl:variable name="dependency-n" select="@name"/>
-          <xsl:choose>
-            <xsl:when test="ancestor::tstp[formula/@name = $n]">
-              <xsl:for-each select="ancestor::tstp[formula/@name = $n]">
-                <xsl:apply-templates select="." mode="strip-extras"/>
-              </xsl:for-each>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
+        <xsl:for-each select="non-logical-data[1]">
+          <xsl:for-each select="non-logical-data[@name]">
+            <xsl:variable name="dependency-n" select="@name"/>
+            <xsl:choose>
+              <xsl:when test="ancestor::tstp[formula/@name = $n]">
+                <xsl:for-each select="ancestor::tstp[formula/@name = $n]">
+                  <xsl:apply-templates select="." mode="strip-extras"/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
 &quot;, &quot;
 &quot;, &quot;  &quot;, $n, &quot;
 &quot;, &quot;
@@ -120,11 +121,12 @@
 &quot;, &quot;  &quot;, $dependency-n, &quot;
 &quot;, &quot;
 &quot;, &quot;but there appears to be no formula with that name.&quot;)"/>
-              <xsl:message terminate="yes">
-                <xsl:value-of select="$message"/>
-              </xsl:message>
-            </xsl:otherwise>
-          </xsl:choose>
+                <xsl:message terminate="yes">
+                  <xsl:value-of select="$message"/>
+                </xsl:message>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
         </xsl:for-each>
       </xsl:for-each>
     </xsl:for-each>
@@ -158,16 +160,17 @@
     <xsl:variable name="n" select="@name"/>
     <xsl:for-each select="source">
       <xsl:for-each select="non-logical-data[@name = &quot;depends&quot;]">
-        <xsl:for-each select="non-logical-data[@name]">
-          <xsl:variable name="dependency-n" select="@name"/>
-          <xsl:choose>
-            <xsl:when test="ancestor::tstp[formula/@name = $n]">
-              <xsl:for-each select="ancestor::tstp[formula/@name = $n]">
-                <xsl:apply-templates select="." mode="strip-extras"/>
-              </xsl:for-each>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
+        <xsl:for-each select="non-logical-data[1]">
+          <xsl:for-each select="non-logical-data[@name]">
+            <xsl:variable name="dependency-n" select="@name"/>
+            <xsl:choose>
+              <xsl:when test="ancestor::tstp[formula/@name = $n]">
+                <xsl:for-each select="ancestor::tstp[formula/@name = $n]">
+                  <xsl:apply-templates select="." mode="strip-extras"/>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:variable name="message" select="concat (&quot;Error: formula&quot;, &quot;
 &quot;, &quot;
 &quot;, &quot;  &quot;, $n, &quot;
 &quot;, &quot;
@@ -176,11 +179,12 @@
 &quot;, &quot;  &quot;, $dependency-n, &quot;
 &quot;, &quot;
 &quot;, &quot;but there appears to be no formula with that name.&quot;)"/>
-              <xsl:message terminate="yes">
-                <xsl:value-of select="$message"/>
-              </xsl:message>
-            </xsl:otherwise>
-          </xsl:choose>
+                <xsl:message terminate="yes">
+                  <xsl:value-of select="$message"/>
+                </xsl:message>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
         </xsl:for-each>
       </xsl:for-each>
     </xsl:for-each>
