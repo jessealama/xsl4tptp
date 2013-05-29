@@ -1,13 +1,13 @@
 .SECONDARY:
 
-.PHONY: all problems clean
+source-tptp = leibniz.p
+source-tptp-xml = $(addsuffix .xml,$(basename $(source-tptp)))
+
+.PHONY: all problems clean $(source-tptp)
 
 gdv-stylesheet = $(srcdir)/gdv.xsl
 render-tptp-stylesheet = $(srcdir)/render-tptp.xsl
 gdv-makefile = $(srcdir)/gdv.makefile
-
-source-tptp = leibniz.p
-source-tptp-xml = $(addsuffix .xml,$(basename $(source-tptp)))
 
 # functions
 exec-or-trash-output = $1 > $2 || (rm -f $2; false)
