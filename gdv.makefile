@@ -1,6 +1,6 @@
 .SECONDARY:
 
-.PHONY: all problems
+.PHONY: all problems clean
 
 gdv-stylesheet = $(srcdir)/gdv.xsl
 render-tptp-stylesheet = $(srcdir)/render-tptp.xsl
