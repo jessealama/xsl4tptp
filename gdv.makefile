@@ -47,7 +47,7 @@ $(source-tptp-xml) : $(source-tptp)
 	rm -f $@1
 
 %.model : %.ax
-	paradox --model $< > $@ || rm -f $@
+	$(call exec-or-trash-output,paradox --model $<,$@)
 
 %.eproof : %.p
-	eproof --tstp-format --auto $< > $@ || rm -f $@
+	$(call exec-or-trash-output,eproof --tstp-format --auto $<,$@)
