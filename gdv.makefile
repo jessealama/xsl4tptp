@@ -1,5 +1,3 @@
-.SECONDARY:
-
 source-tptp = leibniz.p
 source-tptp-xml = $(addsuffix .xml,$(basename $(source-tptp)))
 gdv-stylesheet = $(srcdir)/gdv.xsl
