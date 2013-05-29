@@ -51,3 +51,8 @@ $(source-tptp-xml) : $(source-tptp)
 
 %.eproof : %.p
 	$(call exec-or-trash-output,eproof --tstp-format --auto $<,$@)
+
+clean:
+	rm -f $(wildcard *.ax)
+	rm -f $(wildcard *.eproof)
+	rm -f $(wildcard *.model)
