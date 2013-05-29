@@ -55,3 +55,6 @@ clean:
 	rm -f $(wildcard *.ax)
 	rm -f $(wildcard *.eproof)
 	rm -f $(wildcard *.model)
+	rm -f problems.txt
+	rm -f lemmas.txt
+	rm -f theorems.txt
