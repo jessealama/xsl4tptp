@@ -199,7 +199,7 @@
   </xsl:template>
 
   <xsl:template match="formula" mode="strip-extras">
-    <xsl:param name="status" select="$status"/>
+    <xsl:param name="status"/>
     <xsl:element name="formula">
       <xsl:for-each select="@*">
         <xsl:copy-of select="."/>

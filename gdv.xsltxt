@@ -156,7 +156,7 @@ tpl [*] (#status) mode="strip-extras"
   }
 }
 
-tpl [formula] (#status = $status) mode="strip-extras"
+tpl [formula] (#status) mode="strip-extras"
 {
   <formula {
     for-each [@*] { copy-of `.`; }
