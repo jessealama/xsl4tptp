@@ -9,7 +9,7 @@ gdv-makefile = $(srcdir)/gdv.makefile
 .PHONY: all problems clean $(source-tptp) $(gdv-stylesheet) $(render-tptp-stylesheet)
 
 # functions
-exec-or-trash-output = $1 > $2 || (rm -f $2; false)
+exec-or-trash-output = ($1 > $2) || (rm -f $2; false)
 extract-axioms = $(call exec-or-trash-output,xsltproc --stringparam action "axioms" --stringparam problem "$1" $(gdv-stylesheet) $(source-tptp-xml),$2)
 extract-problem = $(call exec-or-trash-output,xsltproc --stringparam action "problem" --stringparam problem "$1" $(gdv-stylesheet) $(source-tptp-xml),$2)
 render-tptp = $(call exec-or-trash-output,xsltproc $(render-tptp-stylesheet) $1,$2)
