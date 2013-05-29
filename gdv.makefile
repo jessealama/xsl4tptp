@@ -34,7 +34,7 @@ problems: problems.txt
 	cat problems.txt | sed -e 's/$$/.eproof/' | xargs $(MAKE) -C `pwd` --makefile=$(gdv-makefile)
 
 $(source-tptp-xml) : $(source-tptp)
-	tptp4X -c -x -umachine -fxml $(source-tptp) > $(source-tptp-xml) || rm -f $(source-tptp-xml)
+	$(call exec-or-trash-output,tptp4X -c -x -umachine -fxml $(source-tptp),$(source-tptp-xml))
 
 %.ax : $(render-tptp-stylesheet)
 	$(call extract-axioms,$*,$@1)
