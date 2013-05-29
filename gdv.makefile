@@ -6,7 +6,7 @@ gdv-stylesheet = $(srcdir)/gdv.xsl
 render-tptp-stylesheet = $(srcdir)/render-tptp.xsl
 gdv-makefile = $(srcdir)/gdv.makefile
 
-.PHONY: all problems clean $(source-tptp) $(gdv-stylesheet) $(render-tptp-stylesheet)
+.PHONY: all problems clean $(source-tptp) $(gdv-stylesheet) $(render-tptp-stylesheet) $(gdv-makefile)
 
 # functions
 exec-or-trash-output = ($1 > $2) || (rm -f $2; false)
