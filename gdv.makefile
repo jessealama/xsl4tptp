@@ -41,7 +41,7 @@ $(source-tptp-xml) : $(source-tptp)
 	$(call render-tptp,$@1,$@)
 	rm -f $@1
 
-*.p : $(source-tptp-xml) $(render-tptp-stylesheet)
+%.p : $(source-tptp-xml) $(render-tptp-stylesheet)
 	$(call extract-problem,$*,$@1)
 	$(call render-tptp,$@1,$@)
 	rm -f $@1
