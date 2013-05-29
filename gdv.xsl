@@ -101,7 +101,11 @@
 
   <xsl:template match="formula[@status = &quot;lemma&quot; or @status = &quot;theorem&quot;]" mode="problem">
     <xsl:variable name="n" select="@name"/>
-    <xsl:apply-templates select="." mode="strip-extras"/>
+    <xsl:apply-templates select="." mode="strip-extras">
+      <xsl:with-param name="status">
+        <xsl:text>conjecture</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
     <xsl:for-each select="source">
       <xsl:for-each select="non-logical-data[@name = &quot;depends&quot;]">
         <xsl:for-each select="non-logical-data[1]">
@@ -181,21 +185,30 @@
   </xsl:template>
 
   <xsl:template match="*" mode="strip-extras">
+    <xsl:param name="status"/>
     <!-- By default, just copy and recurse -->
     <xsl:variable name="n" select="name (.)"/>
     <xsl:element name="{$n}">
       <xsl:for-each select="@*">
         <xsl:copy-of select="."/>
       </xsl:for-each>
-      <xsl:apply-templates select="*" mode="strip-extras"/>
+      <xsl:apply-templates select="*" mode="strip-extras">
+        <xsl:with-param name="status" select="$status"/>
+      </xsl:apply-templates>
     </xsl:element>
   </xsl:template>
 
   <xsl:template match="formula" mode="strip-extras">
+    <xsl:param name="status" select="$status"/>
     <xsl:element name="formula">
       <xsl:for-each select="@*">
         <xsl:copy-of select="."/>
       </xsl:for-each>
+      <xsl:if test="not($status = &quot;&quot;)">
+        <xsl:attribute name="status">
+          <xsl:value-of select="$status"/>
+        </xsl:attribute>
+      </xsl:if>
       <xsl:apply-templates select="*[1]" mode="strip-extras"/>
     </xsl:element>
   </xsl:template>

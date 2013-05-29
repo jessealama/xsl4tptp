@@ -79,7 +79,7 @@ tpl [formula[@status = "axiom"]] mode="problem"
 tpl [formula[@status = "lemma" or @status = "theorem"]] mode="problem"
 {
   $n = `@name`;
-  apply [.] mode="strip-extras";
+  apply [.] (#status = "conjecture") mode="strip-extras";
   for-each [source] {
     for-each [non-logical-data[@name = "depends"]] {
       for-each [non-logical-data[1]] {
@@ -146,20 +146,23 @@ tpl [formula[@status = "lemma" or @status = "theorem"]] mode="axioms"
   }
 }
 
-tpl [*] mode="strip-extras"
+tpl [*] (#status) mode="strip-extras"
 {
   // By default, just copy and recurse
   $n = `name (.)`;
   <$n {
     for-each [@*] { copy-of `.`; }
-    apply [*] mode="strip-extras";
+    apply [*] (#status = $status) mode="strip-extras";
   }
 }
 
-tpl [formula] mode="strip-extras"
+tpl [formula] (#status = $status) mode="strip-extras"
 {
   <formula {
     for-each [@*] { copy-of `.`; }
+    if [not($status = "")] {
+      @status = $status;
+    }
     apply [*[1]] mode="strip-extras";
   }
 }
