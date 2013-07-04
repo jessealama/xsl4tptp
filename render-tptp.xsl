@@ -31,7 +31,7 @@
   </xsl:template>
 
   <xsl:template match="tstp">
-    <xsl:for-each select="formula">
+    <xsl:for-each select="node()">
       <xsl:apply-templates select="."/>
       <xsl:text>
 </xsl:text>
