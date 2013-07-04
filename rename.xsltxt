@@ -5,8 +5,12 @@ tpl [*] {
   $n = `name (.)`;
   <$n {
     for-each [@*] { copy-of `.`; }
-    apply [*];
+    apply [node()];
   }
+}
+
+tpl [text()] {
+  `.`;
 }
 
 tpl [/] {
