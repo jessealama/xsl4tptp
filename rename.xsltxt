@@ -1,0 +1,21 @@
+stylesheet "1.0";
+output method="xml" indent="yes";
+
+tpl [*] {
+  $n = `name (.)`;
+  <$n {
+    for-each [@*] { copy-of `.`; }
+    apply [*];
+  }
+}
+
+tpl [/] {
+  apply [tstp];
+}
+
+tpl [predicate[@name = "the_actual_world"]] {
+  <predicate {
+    @"name" = "is_the_actual_world";
+    apply [*];
+  }
+}
