@@ -39,10 +39,33 @@
   </xsl:template>
 
   <xsl:template match="comment">
-    <xsl:text>%</xsl:text>
-    <xsl:apply-templates select="text()"/>
-    <xsl:text>
-</xsl:text>
+    <xsl:for-each select="text()">
+      <xsl:variable name="s" select="."/>
+      <xsl:call-template name="emit-percents">
+        <xsl:with-param name="s" select="$s"/>
+      </xsl:call-template>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="emit-percents">
+    <xsl:param name="s"/>
+    <xsl:choose>
+      <xsl:when test="$s = &quot;&quot;"/>
+      <xsl:when test="contains ($s, &quot;\n&quot;)">
+        <xsl:variable name="before" select="substring-before ($s, &quot;
+&quot;)"/>
+        <xsl:variable name="after" select="substring-after ($s, &quot;
+&quot;)"/>
+        <xsl:value-of select="concat (&quot;%&quot;, $before, &quot;
+&quot;)"/>
+        <xsl:call-template name="emit-percents">
+          <xsl:with-param name="s" select="$after"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat (&quot;%&quot;, $s)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="text()">
