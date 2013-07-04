@@ -28,6 +28,14 @@ tpl [tstp] {
   }
 }
 
+tpl [comment] {
+  "%"; apply [text()]; "\n";
+}
+
+tpl [text()] {
+  `.`;
+}
+
 tpl [formula[@syntax = "formula" and @status and @name]] {
   "fof(";
     `@name`; ",";
