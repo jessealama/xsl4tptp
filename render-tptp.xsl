@@ -38,6 +38,17 @@
     </xsl:for-each>
   </xsl:template>
 
+  <xsl:template match="comment">
+    <xsl:text>%</xsl:text>
+    <xsl:apply-templates select="text()"/>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="text()">
+    <xsl:value-of select="."/>
+  </xsl:template>
+
   <xsl:template match="formula[@syntax = &quot;formula&quot; and @status and @name]">
     <xsl:text>fof(</xsl:text>
     <xsl:value-of select="@name"/>
