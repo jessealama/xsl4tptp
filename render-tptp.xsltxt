@@ -24,7 +24,10 @@ tpl [/] {
 
 tpl [tstp] {
   for-each [node()] {
-    apply [.]; "\n";
+    apply [.];
+    if [self::element()] {
+      "\n";
+    }
   }
 }
 

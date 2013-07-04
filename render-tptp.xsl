@@ -33,8 +33,10 @@
   <xsl:template match="tstp">
     <xsl:for-each select="node()">
       <xsl:apply-templates select="."/>
-      <xsl:text>
+      <xsl:if test="self::element()">
+        <xsl:text>
 </xsl:text>
+      </xsl:if>
     </xsl:for-each>
   </xsl:template>
 
