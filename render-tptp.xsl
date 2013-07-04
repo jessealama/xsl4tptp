@@ -42,7 +42,8 @@
     <xsl:for-each select="text()">
       <xsl:variable name="s" select="."/>
       <xsl:call-template name="emit-percents">
-        <xsl:with-param name="s" select="$s"/>
+        <xsl:with-param name="s" select="substring-after ($s, &quot;
+&quot;)"/>
       </xsl:call-template>
     </xsl:for-each>
   </xsl:template>
