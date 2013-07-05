@@ -136,10 +136,10 @@
             <xsl:with-param name="s" select="$after"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select="concat (&quot;%&quot;, $before, $newline, $emit-after)"/>
+        <xsl:value-of select="concat (&quot;%&quot;, &quot; &quot;, $before, $newline, $emit-after)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="concat (&quot;%&quot;, $s)"/>
+        <xsl:value-of select="concat (&quot;%&quot;, &quot; &quot;, $s)"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
