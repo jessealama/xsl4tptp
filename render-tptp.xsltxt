@@ -37,6 +37,7 @@ tpl [comment] {
   for-each [text()] {
     $s = `.`;
     $c = chomp (#s = $s);
+    msg `concat ("before chomping:", "\n", $s, "\n", "after chomping:", "\n", $c)`;
     emit-percents (#s = $c);
   }
 }

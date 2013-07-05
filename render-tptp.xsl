@@ -51,6 +51,12 @@
           <xsl:with-param name="s" select="$s"/>
         </xsl:call-template>
       </xsl:variable>
+      <xsl:message>
+        <xsl:value-of select="concat (&quot;before chomping:&quot;, &quot;
+&quot;, $s, &quot;
+&quot;, &quot;after chomping:&quot;, &quot;
+&quot;, $c)"/>
+      </xsl:message>
       <xsl:call-template name="emit-percents">
         <xsl:with-param name="s" select="$c"/>
       </xsl:call-template>
