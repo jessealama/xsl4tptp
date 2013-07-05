@@ -4,6 +4,10 @@
   <xsl:include href="utils/die.xsl"/>
   <xsl:include href="utils/list.xsl"/>
   <xsl:output method="text"/>
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Variables -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <xsl:variable name="newline" select="&#10;"/>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Templates -->
@@ -67,9 +71,8 @@
   <xsl:template name="chomp-front">
     <xsl:param name="s"/>
     <xsl:choose>
-      <xsl:when test="starts-with ($s, &quot;\n&quot;)">
-        <xsl:value-of select="substring-after ($s, &quot;
-&quot;)"/>
+      <xsl:when test="starts-with ($s, $newline)">
+        <xsl:value-of select="substring-after ($s, $newline)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="$s"/>
@@ -80,19 +83,16 @@
   <xsl:template name="chomp-tail">
     <xsl:param name="s"/>
     <xsl:choose>
-      <xsl:when test="contains ($s, &quot;\n&quot;)">
-        <xsl:variable name="before" select="substring-before ($s, &quot;
-&quot;)"/>
+      <xsl:when test="contains ($s, $newline)">
+        <xsl:variable name="before" select="substring-before ($s, $newline)"/>
         <xsl:choose>
-          <xsl:when test="contains ($before, &quot;\n&quot;)">
+          <xsl:when test="contains ($before, $newline)">
             <xsl:variable name="chomped">
               <xsl:call-template name="chomp-tail">
-                <xsl:with-param name="s" select="substring-after ($before, &quot;
-&quot;)"/>
+                <xsl:with-param name="s" select="substring-after ($before, $newline)"/>
               </xsl:call-template>
             </xsl:variable>
-            <xsl:value-of select="concat ($before, &quot;
-&quot;, $chomped)"/>
+            <xsl:value-of select="concat ($before, $newline, $chomped)"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="$before"/>
@@ -119,8 +119,7 @@
 
   <xsl:template name="emit-percents">
     <xsl:param name="s"/>
-    <xsl:value-of select="translate ($s, &quot;
-&quot;, &quot;%&quot;)"/>
+    <xsl:value-of select="translate ($s, $newline, &quot;%&quot;)"/>
   </xsl:template>
 
   <xsl:template match="text()">

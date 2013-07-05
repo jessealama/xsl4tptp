@@ -4,6 +4,12 @@ include "utils/list.xsl";
 output method="text";
 
 //////////////////////////////////////////////////////////////////////
+// Variables
+//////////////////////////////////////////////////////////////////////
+
+$newline = `&#10;`;
+
+//////////////////////////////////////////////////////////////////////
 // Templates
 //////////////////////////////////////////////////////////////////////
 
@@ -44,19 +50,19 @@ tpl [comment] {
 
 // if the string starts with a newline, delete it
 tpl chomp-front (#s) {
-  if [starts-with ($s, "\n")] {
-    `substring-after ($s, "\n")`;
+  if [starts-with ($s, $newline)] {
+    `substring-after ($s, $newline)`;
   } else {
     $s;
   }
 }
 
 tpl chomp-tail (#s) {
-  if [contains ($s, "\n")] {
-    $before = `substring-before ($s, "\n")`;
-    if [contains ($before, "\n")] {
-      $chomped = chomp-tail (#s = `substring-after ($before, "\n")`);
-      `concat ($before, "\n", $chomped)`;
+  if [contains ($s, $newline)] {
+    $before = `substring-before ($s, $newline)`;
+    if [contains ($before, $newline)] {
+      $chomped = chomp-tail (#s = `substring-after ($before, $newline)`);
+      `concat ($before, $newline, $chomped)`;
     } else {
       $before;
     }
@@ -71,8 +77,7 @@ tpl chomp (#s) {
 }
 
 tpl emit-percents (#s) {
-  `translate ($s, "
-", "%")`;
+  `translate ($s, $newline, "%")`;
 }
 
 tpl [text()] {
