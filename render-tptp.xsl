@@ -75,6 +75,9 @@
         <xsl:value-of select="substring-after ($s, $newline)"/>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:message>
+          <xsl:text>does not start with newline</xsl:text>
+        </xsl:message>
         <xsl:value-of select="$s"/>
       </xsl:otherwise>
     </xsl:choose>

@@ -53,6 +53,7 @@ tpl chomp-front (#s) {
   if [starts-with ($s, $newline)] {
     `substring-after ($s, $newline)`;
   } else {
+    msg "does not start with newline";
     $s;
   }
 }
