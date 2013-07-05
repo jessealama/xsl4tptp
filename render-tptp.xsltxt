@@ -34,8 +34,37 @@ tpl [tstp] {
 tpl [comment] {
   for-each [text()] {
     $s = `.`;
-    emit-percents (#s = `substring-after ($s, "\n")`);
+    $c = chomp (#s = $s);
+    emit-percents (#s = $c);
   }
+}
+
+// if the string starts with a newline, delete it
+tpl chomp-front (#s) {
+  if [starts-ith ($s, "\n")] {
+    `substring-after ($s, "\n")`;
+  } else {
+    $s;
+  }
+}
+
+tpl chomp-tail (#s) {
+  if [contains ($s, "\n")] {
+    $before = `substring-before ($s, "\n")`;
+    if [contains ($before, "\n")] {
+      $chomped = chomp-tail (#s = `substring-after ($before, "\n")`);
+      `concat ($before, "\n", $chomped)`;
+    } else {
+      $before;
+    }
+  } else {
+    $s;
+  }
+}
+
+tpl chomp (#s) {
+  $front = chomp-front (#s = $s);
+  chomp-tail (#s = $front);
 }
 
 tpl emit-percents (#s) {

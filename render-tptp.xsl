@@ -43,11 +43,69 @@
   <xsl:template match="comment">
     <xsl:for-each select="text()">
       <xsl:variable name="s" select="."/>
+      <xsl:variable name="c">
+        <xsl:call-template name="chomp">
+          <xsl:with-param name="s" select="$s"/>
+        </xsl:call-template>
+      </xsl:variable>
       <xsl:call-template name="emit-percents">
-        <xsl:with-param name="s" select="substring-after ($s, &quot;
-&quot;)"/>
+        <xsl:with-param name="s" select="$c"/>
       </xsl:call-template>
     </xsl:for-each>
+  </xsl:template>
+
+  <!-- if the string starts with a newline, delete it -->
+  <xsl:template name="chomp-front">
+    <xsl:param name="s"/>
+    <xsl:choose>
+      <xsl:when test="starts-ith ($s, &quot;\n&quot;)">
+        <xsl:value-of select="substring-after ($s, &quot;
+&quot;)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="chomp-tail">
+    <xsl:param name="s"/>
+    <xsl:choose>
+      <xsl:when test="contains ($s, &quot;\n&quot;)">
+        <xsl:variable name="before" select="substring-before ($s, &quot;
+&quot;)"/>
+        <xsl:choose>
+          <xsl:when test="contains ($before, &quot;\n&quot;)">
+            <xsl:variable name="chomped">
+              <xsl:call-template name="chomp-tail">
+                <xsl:with-param name="s" select="substring-after ($before, &quot;
+&quot;)"/>
+              </xsl:call-template>
+            </xsl:variable>
+            <xsl:value-of select="concat ($before, &quot;
+&quot;, $chomped)"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$before"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$s"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="chomp">
+    <xsl:param name="s"/>
+    <xsl:variable name="front">
+      <xsl:call-template name="chomp-front">
+        <xsl:with-param name="s" select="$s"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:call-template name="chomp-tail">
+      <xsl:with-param name="s" select="$front"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template name="emit-percents">
