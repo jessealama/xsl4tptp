@@ -60,11 +60,16 @@ tpl chomp-front (#s) {
 tpl chomp-tail (#s) {
   if [contains ($s, $newline)] {
     $before = `substring-before ($s, $newline)`;
-    if [contains ($before, $newline)] {
-      $chomped = chomp-tail (#s = `substring-after ($before, $newline)`);
+    $after = `substring-after ($s, $newline)`;
+    if [contains ($after, $newline)] {
+      $chomped = chomp-tail (#s = $after);
       `concat ($before, $newline, $chomped)`;
     } else {
-      $before;
+      if [$after = ""] {
+        `concat ($before)`;
+      } else {
+        `concat ($before, $newline, $after)`;
+      }
     }
   } else {
     $s;

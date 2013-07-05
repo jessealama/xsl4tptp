@@ -85,17 +85,25 @@
     <xsl:choose>
       <xsl:when test="contains ($s, $newline)">
         <xsl:variable name="before" select="substring-before ($s, $newline)"/>
+        <xsl:variable name="after" select="substring-after ($s, $newline)"/>
         <xsl:choose>
-          <xsl:when test="contains ($before, $newline)">
+          <xsl:when test="contains ($after, $newline)">
             <xsl:variable name="chomped">
               <xsl:call-template name="chomp-tail">
-                <xsl:with-param name="s" select="substring-after ($before, $newline)"/>
+                <xsl:with-param name="s" select="$after"/>
               </xsl:call-template>
             </xsl:variable>
             <xsl:value-of select="concat ($before, $newline, $chomped)"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="$before"/>
+            <xsl:choose>
+              <xsl:when test="$after = &quot;&quot;">
+                <xsl:value-of select="concat ($before)"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="concat ($before, $newline, $after)"/>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
