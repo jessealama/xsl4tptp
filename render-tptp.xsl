@@ -98,7 +98,7 @@
           <xsl:otherwise>
             <xsl:choose>
               <xsl:when test="$after = &quot;&quot;">
-                <xsl:value-of select="concat ($before)"/>
+                <xsl:value-of select="$before"/>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:value-of select="concat ($before, $newline, $after)"/>
