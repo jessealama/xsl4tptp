@@ -61,7 +61,7 @@
   <xsl:template name="chomp-front">
     <xsl:param name="s"/>
     <xsl:choose>
-      <xsl:when test="starts-ith ($s, &quot;\n&quot;)">
+      <xsl:when test="starts-with ($s, &quot;\n&quot;)">
         <xsl:value-of select="substring-after ($s, &quot;
 &quot;)"/>
       </xsl:when>

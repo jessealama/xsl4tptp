@@ -43,7 +43,7 @@ tpl [comment] {
 
 // if the string starts with a newline, delete it
 tpl chomp-front (#s) {
-  if [starts-ith ($s, "\n")] {
+  if [starts-with ($s, "\n")] {
     `substring-after ($s, "\n")`;
   } else {
     $s;
