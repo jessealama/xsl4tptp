@@ -71,20 +71,8 @@ tpl chomp (#s) {
 }
 
 tpl emit-percents (#s) {
-  choose {
-    when [$s = ""] {
-      // nothing
-    }
-    when [contains ($s, "\n")] {
-      $before = `substring-before ($s, "\n")`;
-      $after = `substring-after ($s, "\n")`;
-      `concat ("%", $before, "\n")`;
-      emit-percents (#s = $after);
-    }
-    otherwise {
-      `concat ("%", $s)`;
-    }
-  }
+  `translate ($s, "
+", "%")`;
 }
 
 tpl [text()] {
