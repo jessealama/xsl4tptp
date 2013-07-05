@@ -75,9 +75,6 @@
         <xsl:value-of select="substring-after ($s, $newline)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:message>
-          <xsl:text>does not start with newline</xsl:text>
-        </xsl:message>
         <xsl:value-of select="$s"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -122,7 +119,21 @@
 
   <xsl:template name="emit-percents">
     <xsl:param name="s"/>
-    <xsl:value-of select="translate ($s, $newline, &quot;%&quot;)"/>
+    <xsl:choose>
+      <xsl:when test="contains ($s, $newline)">
+        <xsl:variable name="before" select="substring-before ($s, $newline)"/>
+        <xsl:variable name="after" select="substring-after ($s, $newline)"/>
+        <xsl:variable name="emit-after">
+          <xsl:call-template name="emit-percents">
+            <xsl:with-param name="s" select="$after"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="concat (&quot;%&quot;, $before, $emit-after)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat (&quot;%&quot;, $s)"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="text()">

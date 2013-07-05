@@ -53,7 +53,6 @@ tpl chomp-front (#s) {
   if [starts-with ($s, $newline)] {
     `substring-after ($s, $newline)`;
   } else {
-    msg "does not start with newline";
     $s;
   }
 }
@@ -78,7 +77,14 @@ tpl chomp (#s) {
 }
 
 tpl emit-percents (#s) {
-  `translate ($s, $newline, "%")`;
+  if [contains ($s, $newline)] {
+    $before = `substring-before ($s, $newline)`;
+    $after = `substring-after ($s, $newline)`;
+    $emit-after = emit-percents (#s = $after);
+    `concat ("%", $before, $emit-after)`;
+  } else {
+    `concat ("%", $s)`;
+  }
 }
 
 tpl [text()] {
